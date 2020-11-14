@@ -24330,6 +24330,8 @@
       _jsxFileName$3 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
 
   var TreeDropdown = function TreeDropdown(_ref) {
+    var _selectedOption$get, _selectedOption$get2;
+
     var anchorEl = _ref.anchorEl,
         hierarchyField = _ref.hierarchyField,
         itemId = _ref.itemId,
@@ -24342,15 +24344,15 @@
         width = _ref.width;
     var classes = styles.makeStyles(theme$1(width))();
 
-    var _React$useState = React__default['default'].useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
-        _React$useState2 = _slicedToArray(_React$useState, 2),
-        expanded = _React$useState2[0],
-        setExpanded = _React$useState2[1];
+    var _useState = React.useState((selectedOption === null || selectedOption === void 0 ? void 0 : (_selectedOption$get = selectedOption.get(hierarchyField)) === null || _selectedOption$get === void 0 ? void 0 : _selectedOption$get.split(".")) || []),
+        _useState2 = _slicedToArray(_useState, 2),
+        expanded = _useState2[0],
+        setExpanded = _useState2[1];
 
-    var _React$useState3 = React__default['default'].useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
-        _React$useState4 = _slicedToArray(_React$useState3, 2),
-        selected = _React$useState4[0],
-        setSelected = _React$useState4[1];
+    var _useState3 = React.useState((selectedOption === null || selectedOption === void 0 ? void 0 : (_selectedOption$get2 = selectedOption.get(hierarchyField)) === null || _selectedOption$get2 === void 0 ? void 0 : _selectedOption$get2.split(".")) || []),
+        _useState4 = _slicedToArray(_useState3, 2),
+        selected = _useState4[0],
+        setSelected = _useState4[1];
 
     var handleToggle = function handleToggle(event, nodeIds) {
       setExpanded(nodeIds);
@@ -24369,26 +24371,9 @@
         itemLabel: itemLabel,
         hierarchyField: hierarchyField
       });
-
-      if ((_item$get = item.get("children")) === null || _item$get === void 0 ? void 0 : _item$get.size) {
-        return /*#__PURE__*/React__default['default'].createElement(TreeDropdownItem, {
-          key: id,
-          nodeId: id,
-          label: label,
-          onClick: function onClick(event) {
-            return onSelected(event, id);
-          },
-          __self: _this$3,
-          __source: {
-            fileName: _jsxFileName$3,
-            lineNumber: 60,
-            columnNumber: 9
-          }
-        }, item.get("children", fromJS([])).map(function (child) {
-          return renderItem(child);
-        }));
-      }
-
+      var renderItems = ((_item$get = item.get("children")) === null || _item$get === void 0 ? void 0 : _item$get.size) ? item.get("children", fromJS([])).map(function (child) {
+        return renderItem(child);
+      }) : null;
       return /*#__PURE__*/React__default['default'].createElement(TreeDropdownItem, {
         key: id,
         nodeId: id,
@@ -24399,10 +24384,10 @@
         __self: _this$3,
         __source: {
           fileName: _jsxFileName$3,
-          lineNumber: 72,
+          lineNumber: 63,
           columnNumber: 7
         }
-      });
+      }, renderItems);
     };
 
     var renderOptions = function renderOptions() {
@@ -24428,7 +24413,7 @@
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 84,
+        lineNumber: 77,
         columnNumber: 5
       }
     }, /*#__PURE__*/React__default['default'].createElement(TreeView__default['default'], {
@@ -24437,7 +24422,7 @@
         __self: _this$3,
         __source: {
           fileName: _jsxFileName$3,
-          lineNumber: 101,
+          lineNumber: 94,
           columnNumber: 30
         }
       }),
@@ -24445,7 +24430,7 @@
         __self: _this$3,
         __source: {
           fileName: _jsxFileName$3,
-          lineNumber: 102,
+          lineNumber: 95,
           columnNumber: 28
         }
       }),
@@ -24453,7 +24438,7 @@
         __self: _this$3,
         __source: {
           fileName: _jsxFileName$3,
-          lineNumber: 103,
+          lineNumber: 96,
           columnNumber: 25
         }
       }),
@@ -24464,7 +24449,7 @@
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 99,
+        lineNumber: 92,
         columnNumber: 7
       }
     }, renderOptions()));

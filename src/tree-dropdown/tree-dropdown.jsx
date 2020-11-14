@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name, react/no-multi-comp */
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
 import { fromJS } from "immutable";
 import { makeStyles } from "@material-ui/core/styles";
@@ -32,11 +32,11 @@ const TreeDropdown = ({
 }) => {
   const classes = makeStyles(theme(width))();
 
-  const [expanded, setExpanded] = React.useState(
-    selectedOption?.get(hierarchyField, "").split(".")
+  const [expanded, setExpanded] = useState(
+    selectedOption?.get(hierarchyField)?.split(".") || []
   );
-  const [selected, setSelected] = React.useState(
-    selectedOption?.get(hierarchyField, "").split(".")
+  const [selected, setSelected] = useState(
+    selectedOption?.get(hierarchyField)?.split(".") || []
   );
 
   const handleToggle = (event, nodeIds) => {
@@ -55,18 +55,9 @@ const TreeDropdown = ({
       hierarchyField
     });
 
-    if (item.get("children")?.size) {
-      return (
-        <TreeDropdownItem
-          key={id}
-          nodeId={id}
-          label={label}
-          onClick={event => onSelected(event, id)}
-        >
-          {item.get("children", fromJS([])).map(child => renderItem(child))}
-        </TreeDropdownItem>
-      );
-    }
+    const renderItems = item.get("children")?.size
+      ? item.get("children", fromJS([])).map(child => renderItem(child))
+      : null;
 
     return (
       <TreeDropdownItem
@@ -74,7 +65,9 @@ const TreeDropdown = ({
         nodeId={id}
         label={label}
         onClick={event => onSelected(event, id)}
-      />
+      >
+        {renderItems}
+      </TreeDropdownItem>
     );
   };
 
