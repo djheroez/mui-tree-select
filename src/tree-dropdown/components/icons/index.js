@@ -1,1 +1,1 @@
-export * from "./icons";
+export { CloseSquare, MinusSquare, PlusSquare } from "./icons";

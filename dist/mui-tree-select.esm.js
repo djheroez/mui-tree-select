@@ -1,46 +1,1247 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"), require("@material-ui/core/NativeSelect/NativeSelect"), require("@material-ui/core"), require("@material-ui/core/styles"), require("@material-ui/icons/Close"), require("@material-ui/lab/TreeView"), require("@material-ui/core/SvgIcon"), require("@material-ui/core/Collapse"), require("@react-spring/web"), require("@material-ui/lab/TreeItem"));
-	else if(typeof define === 'function' && define.amd)
-		define(["react", "@material-ui/core/NativeSelect/NativeSelect", "@material-ui/core", "@material-ui/core/styles", "@material-ui/icons/Close", "@material-ui/lab/TreeView", "@material-ui/core/SvgIcon", "@material-ui/core/Collapse", "@react-spring/web", "@material-ui/lab/TreeItem"], factory);
-	else if(typeof exports === 'object')
-		exports["MuiTreeSelect"] = factory(require("react"), require("@material-ui/core/NativeSelect/NativeSelect"), require("@material-ui/core"), require("@material-ui/core/styles"), require("@material-ui/icons/Close"), require("@material-ui/lab/TreeView"), require("@material-ui/core/SvgIcon"), require("@material-ui/core/Collapse"), require("@react-spring/web"), require("@material-ui/lab/TreeItem"));
-	else
-		root["MuiTreeSelect"] = factory(root["React"], root["@material-ui/core/NativeSelect/NativeSelect"], root["@material-ui/core"], root["@material-ui/core/styles"], root["@material-ui/icons/Close"], root["@material-ui/lab/TreeView"], root["@material-ui/core/SvgIcon"], root["@material-ui/core/Collapse"], root["@react-spring/web"], root["@material-ui/lab/TreeItem"]);
-})(self, function(__WEBPACK_EXTERNAL_MODULE__234__, __WEBPACK_EXTERNAL_MODULE__913__, __WEBPACK_EXTERNAL_MODULE__731__, __WEBPACK_EXTERNAL_MODULE__604__, __WEBPACK_EXTERNAL_MODULE__777__, __WEBPACK_EXTERNAL_MODULE__418__, __WEBPACK_EXTERNAL_MODULE__524__, __WEBPACK_EXTERNAL_MODULE__893__, __WEBPACK_EXTERNAL_MODULE__763__, __WEBPACK_EXTERNAL_MODULE__582__) {
-return /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+import React, { memo, forwardRef, useRef, useState, useCallback, useImperativeHandle, cloneElement } from 'react';
+import { styles } from '@material-ui/core/NativeSelect/NativeSelect';
+import { Button, Popover, useForkRef, useControlled, IconButton, Input, FormControl, InputLabel } from '@material-ui/core';
+import { useTheme, makeStyles, fade, withStyles } from '@material-ui/core/styles';
+import CloseIcon from '@material-ui/icons/Close';
+import TreeView from '@material-ui/lab/TreeView';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import Collapse from '@material-ui/core/Collapse';
+import { useSpring, animated } from '@react-spring/web';
+import TreeItem from '@material-ui/lab/TreeItem';
 
-/***/ 168:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
 
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
+  return obj;
+}
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => /* reexport */ mui_tree_select
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function createCommonjsModule(fn, basedir, module) {
+	return module = {
+		path: basedir,
+		exports: {},
+		require: function (path, base) {
+			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+		}
+	}, fn(module, module.exports), module.exports;
+}
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}
+
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?
+Symbol.for("react.suspense_list"):60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.block"):60121,w=b?Symbol.for("react.fundamental"):60117,x=b?Symbol.for("react.responder"):60118,y=b?Symbol.for("react.scope"):60119;
+function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}var AsyncMode=l;var ConcurrentMode=m;var ContextConsumer=k;var ContextProvider=h;var Element=c;var ForwardRef=n;var Fragment=e;var Lazy=t;var Memo=r;var Portal=d;
+var Profiler=g;var StrictMode=f;var Suspense=p;var isAsyncMode=function(a){return A(a)||z(a)===l};var isConcurrentMode=A;var isContextConsumer=function(a){return z(a)===k};var isContextProvider=function(a){return z(a)===h};var isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};var isForwardRef=function(a){return z(a)===n};var isFragment=function(a){return z(a)===e};var isLazy=function(a){return z(a)===t};
+var isMemo=function(a){return z(a)===r};var isPortal=function(a){return z(a)===d};var isProfiler=function(a){return z(a)===g};var isStrictMode=function(a){return z(a)===f};var isSuspense=function(a){return z(a)===p};
+var isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};var typeOf=z;
+
+var reactIs_production_min = {
+	AsyncMode: AsyncMode,
+	ConcurrentMode: ConcurrentMode,
+	ContextConsumer: ContextConsumer,
+	ContextProvider: ContextProvider,
+	Element: Element,
+	ForwardRef: ForwardRef,
+	Fragment: Fragment,
+	Lazy: Lazy,
+	Memo: Memo,
+	Portal: Portal,
+	Profiler: Profiler,
+	StrictMode: StrictMode,
+	Suspense: Suspense,
+	isAsyncMode: isAsyncMode,
+	isConcurrentMode: isConcurrentMode,
+	isContextConsumer: isContextConsumer,
+	isContextProvider: isContextProvider,
+	isElement: isElement,
+	isForwardRef: isForwardRef,
+	isFragment: isFragment,
+	isLazy: isLazy,
+	isMemo: isMemo,
+	isPortal: isPortal,
+	isProfiler: isProfiler,
+	isStrictMode: isStrictMode,
+	isSuspense: isSuspense,
+	isValidElementType: isValidElementType,
+	typeOf: typeOf
+};
+
+var reactIs_development = createCommonjsModule(function (module, exports) {
+
+
+
+if (process.env.NODE_ENV !== "production") {
+  (function() {
+
+// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+// nor polyfill, then a plain number is used for performance.
+var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+// (unstable) APIs that have been removed. Can we remove the symbols?
+
+var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+function isValidElementType(type) {
+  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+}
+
+function typeOf(object) {
+  if (typeof object === 'object' && object !== null) {
+    var $$typeof = object.$$typeof;
+
+    switch ($$typeof) {
+      case REACT_ELEMENT_TYPE:
+        var type = object.type;
+
+        switch (type) {
+          case REACT_ASYNC_MODE_TYPE:
+          case REACT_CONCURRENT_MODE_TYPE:
+          case REACT_FRAGMENT_TYPE:
+          case REACT_PROFILER_TYPE:
+          case REACT_STRICT_MODE_TYPE:
+          case REACT_SUSPENSE_TYPE:
+            return type;
+
+          default:
+            var $$typeofType = type && type.$$typeof;
+
+            switch ($$typeofType) {
+              case REACT_CONTEXT_TYPE:
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_LAZY_TYPE:
+              case REACT_MEMO_TYPE:
+              case REACT_PROVIDER_TYPE:
+                return $$typeofType;
+
+              default:
+                return $$typeof;
+            }
+
+        }
+
+      case REACT_PORTAL_TYPE:
+        return $$typeof;
+    }
+  }
+
+  return undefined;
+} // AsyncMode is deprecated along with isAsyncMode
+
+var AsyncMode = REACT_ASYNC_MODE_TYPE;
+var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+var ContextConsumer = REACT_CONTEXT_TYPE;
+var ContextProvider = REACT_PROVIDER_TYPE;
+var Element = REACT_ELEMENT_TYPE;
+var ForwardRef = REACT_FORWARD_REF_TYPE;
+var Fragment = REACT_FRAGMENT_TYPE;
+var Lazy = REACT_LAZY_TYPE;
+var Memo = REACT_MEMO_TYPE;
+var Portal = REACT_PORTAL_TYPE;
+var Profiler = REACT_PROFILER_TYPE;
+var StrictMode = REACT_STRICT_MODE_TYPE;
+var Suspense = REACT_SUSPENSE_TYPE;
+var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+function isAsyncMode(object) {
+  {
+    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+    }
+  }
+
+  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+}
+function isConcurrentMode(object) {
+  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+}
+function isContextConsumer(object) {
+  return typeOf(object) === REACT_CONTEXT_TYPE;
+}
+function isContextProvider(object) {
+  return typeOf(object) === REACT_PROVIDER_TYPE;
+}
+function isElement(object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+}
+function isForwardRef(object) {
+  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+}
+function isFragment(object) {
+  return typeOf(object) === REACT_FRAGMENT_TYPE;
+}
+function isLazy(object) {
+  return typeOf(object) === REACT_LAZY_TYPE;
+}
+function isMemo(object) {
+  return typeOf(object) === REACT_MEMO_TYPE;
+}
+function isPortal(object) {
+  return typeOf(object) === REACT_PORTAL_TYPE;
+}
+function isProfiler(object) {
+  return typeOf(object) === REACT_PROFILER_TYPE;
+}
+function isStrictMode(object) {
+  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+}
+function isSuspense(object) {
+  return typeOf(object) === REACT_SUSPENSE_TYPE;
+}
+
+exports.AsyncMode = AsyncMode;
+exports.ConcurrentMode = ConcurrentMode;
+exports.ContextConsumer = ContextConsumer;
+exports.ContextProvider = ContextProvider;
+exports.Element = Element;
+exports.ForwardRef = ForwardRef;
+exports.Fragment = Fragment;
+exports.Lazy = Lazy;
+exports.Memo = Memo;
+exports.Portal = Portal;
+exports.Profiler = Profiler;
+exports.StrictMode = StrictMode;
+exports.Suspense = Suspense;
+exports.isAsyncMode = isAsyncMode;
+exports.isConcurrentMode = isConcurrentMode;
+exports.isContextConsumer = isContextConsumer;
+exports.isContextProvider = isContextProvider;
+exports.isElement = isElement;
+exports.isForwardRef = isForwardRef;
+exports.isFragment = isFragment;
+exports.isLazy = isLazy;
+exports.isMemo = isMemo;
+exports.isPortal = isPortal;
+exports.isProfiler = isProfiler;
+exports.isStrictMode = isStrictMode;
+exports.isSuspense = isSuspense;
+exports.isValidElementType = isValidElementType;
+exports.typeOf = typeOf;
+  })();
+}
 });
 
-// EXTERNAL MODULE: external {"commonjs":["react"],"commonjs2":"react","amd":"react","umd":"react","root":"React"}
-var external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_ = __webpack_require__(234);
-var external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default = /*#__PURE__*/__webpack_require__.n(external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_);
+var reactIs = createCommonjsModule(function (module) {
 
-// EXTERNAL MODULE: ./node_modules/prop-types/index.js
-var prop_types = __webpack_require__(697);
-var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
+if (process.env.NODE_ENV === 'production') {
+  module.exports = reactIs_production_min;
+} else {
+  module.exports = reactIs_development;
+}
+});
 
-// EXTERNAL MODULE: external "@material-ui/core/NativeSelect/NativeSelect"
-var NativeSelect_ = __webpack_require__(913);
-// EXTERNAL MODULE: external "@material-ui/core"
-var core_ = __webpack_require__(731);
-// EXTERNAL MODULE: external "@material-ui/core/styles"
-var styles_ = __webpack_require__(604);
-// CONCATENATED MODULE: ./src/constants.js
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+var ReactPropTypesSecret_1 = ReactPropTypesSecret;
+
+var printWarning = function() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
+  var loggedTypeFailures = {};
+  var has = Function.call.bind(Object.prototype.hasOwnProperty);
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (process.env.NODE_ENV !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
+        } catch (ex) {
+          error = ex;
+        }
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          );
+        }
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+checkPropTypes.resetWarningCache = function() {
+  if (process.env.NODE_ENV !== 'production') {
+    loggedTypeFailures = {};
+  }
+};
+
+var checkPropTypes_1 = checkPropTypes;
+
+var has$1 = Function.call.bind(Object.prototype.hasOwnProperty);
+var printWarning$1 = function() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  printWarning$1 = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (process.env.NODE_ENV !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret_1) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error(
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            printWarning$1(
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!reactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if (process.env.NODE_ENV !== 'production') {
+        if (arguments.length > 1) {
+          printWarning$1(
+            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
+            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
+          );
+        } else {
+          printWarning$1('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+        if (type === 'symbol') {
+          return String(value);
+        }
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (has$1(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      process.env.NODE_ENV !== 'production' ? printWarning$1('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        printWarning$1(
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+        );
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from
+      // props.
+      var allKeys = objectAssign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // falsy value can't be a Symbol
+    if (!propValue) {
+      return false;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;
+    }
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes_1;
+  ReactPropTypes.resetWarningCache = checkPropTypes_1.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+function emptyFunction() {}
+function emptyFunctionWithReset() {}
+emptyFunctionWithReset.resetWarningCache = emptyFunction;
+
+var factoryWithThrowingShims = function() {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret_1) {
+      // It is still safe when called from React.
+      return;
+    }
+    var err = new Error(
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+    err.name = 'Invariant Violation';
+    throw err;
+  }  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  }  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  var ReactPropTypes = {
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    elementType: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim,
+
+    checkPropTypes: emptyFunctionWithReset,
+    resetWarningCache: emptyFunction
+  };
+
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+var propTypes = createCommonjsModule(function (module) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var ReactIs = reactIs;
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = factoryWithTypeCheckers(ReactIs.isElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = factoryWithThrowingShims();
+}
+});
+
 var NAME = "MuiTreeSelect";
 var INPUT_NAME = "TreeSelectInput";
-// CONCATENATED MODULE: ./node_modules/clsx/dist/clsx.m.js
+
 function toVal(mix) {
 	var k, y, str='';
 
@@ -69,20 +1270,19 @@ function toVal(mix) {
 	return str;
 }
 
-/* harmony default export */ function clsx_m() {
+function clsx () {
 	var i=0, tmp, x, str='';
 	while (i < arguments.length) {
 		if (tmp = arguments[i++]) {
 			if (x = toVal(tmp)) {
 				str && (str += ' ');
-				str += x
+				str += x;
 			}
 		}
 	}
 	return str;
 }
 
-// CONCATENATED MODULE: ./node_modules/immutable/dist/immutable.es.js
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -337,7 +1537,7 @@ function getIteratorFn(iterable) {
   }
 }
 
-var immutable_es_hasOwnProperty = Object.prototype.hasOwnProperty;
+var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 
 function isArrayLike(value) {
   if (Array.isArray(value) || typeof value === 'string') {
@@ -577,7 +1777,7 @@ var ObjectSeq = /*@__PURE__*/(function (KeyedSeq) {
   };
 
   ObjectSeq.prototype.has = function has (key) {
-    return immutable_es_hasOwnProperty.call(this._object, key);
+    return hasOwnProperty$1.call(this._object, key);
   };
 
   ObjectSeq.prototype.__iterate = function __iterate (fn, reverse) {
@@ -1992,16 +3192,16 @@ function quoteString(value) {
   }
 }
 
-function has(collection, key) {
+function has$2(collection, key) {
   return isImmutable(collection)
     ? collection.has(key)
-    : isDataStructure(collection) && immutable_es_hasOwnProperty.call(collection, key);
+    : isDataStructure(collection) && hasOwnProperty$1.call(collection, key);
 }
 
 function get(collection, key, notSetValue) {
   return isImmutable(collection)
     ? collection.get(key, notSetValue)
-    : !has(collection, key)
+    : !has$2(collection, key)
       ? notSetValue
       : typeof collection.get === 'function'
         ? collection.get(key)
@@ -2014,7 +3214,7 @@ function shallowCopy(from) {
   }
   var to = {};
   for (var key in from) {
-    if (immutable_es_hasOwnProperty.call(from, key)) {
+    if (hasOwnProperty$1.call(from, key)) {
       to[key] = from[key];
     }
   }
@@ -2035,7 +3235,7 @@ function remove(collection, key) {
     }
     return collection.remove(key);
   }
-  if (!immutable_es_hasOwnProperty.call(collection, key)) {
+  if (!hasOwnProperty$1.call(collection, key)) {
     return collection;
   }
   var collectionCopy = shallowCopy(collection);
@@ -2061,7 +3261,7 @@ function set(collection, key, value) {
     }
     return collection.set(key, value);
   }
-  if (immutable_es_hasOwnProperty.call(collection, key) && value === collection[key]) {
+  if (hasOwnProperty$1.call(collection, key) && value === collection[key]) {
     return collection;
   }
   var collectionCopy = shallowCopy(collection);
@@ -2212,34 +3412,6 @@ function mergeIntoKeyedWith(collection, collections, merger) {
   });
 }
 
-function merge$1(collection) {
-  var sources = [], len = arguments.length - 1;
-  while ( len-- > 0 ) sources[ len ] = arguments[ len + 1 ];
-
-  return mergeWithSources(collection, sources);
-}
-
-function mergeWith$1(merger, collection) {
-  var sources = [], len = arguments.length - 2;
-  while ( len-- > 0 ) sources[ len ] = arguments[ len + 2 ];
-
-  return mergeWithSources(collection, sources, merger);
-}
-
-function mergeDeep(collection) {
-  var sources = [], len = arguments.length - 1;
-  while ( len-- > 0 ) sources[ len ] = arguments[ len + 1 ];
-
-  return mergeDeepWithSources(collection, sources);
-}
-
-function mergeDeepWith(merger, collection) {
-  var sources = [], len = arguments.length - 2;
-  while ( len-- > 0 ) sources[ len ] = arguments[ len + 2 ];
-
-  return mergeDeepWithSources(collection, sources, merger);
-}
-
 function mergeDeepWithSources(collection, sources, merger) {
   return mergeWithSources(collection, sources, deepMergerWith(merger));
 }
@@ -2269,7 +3441,7 @@ function mergeWithSources(collection, sources, merger) {
         merged.push(value);
       }
     : function (value, key) {
-        var hasVal = immutable_es_hasOwnProperty.call(merged, key);
+        var hasVal = hasOwnProperty$1.call(merged, key);
         var nextVal =
           hasVal && merger ? merger(merged[key], value, key) : value;
         if (!hasVal || nextVal !== merged[key]) {
@@ -4685,7 +5857,7 @@ function hasIn$1(searchKeyPath) {
   return hasIn(this, searchKeyPath);
 }
 
-function toObject() {
+function toObject$1() {
   assertNotInfinite(this.size);
   var object = {};
   this.__iterate(function (v, k) {
@@ -4735,7 +5907,7 @@ mixin(Collection, {
     return Map(this.toKeyedSeq());
   },
 
-  toObject: toObject,
+  toObject: toObject$1,
 
   toOrderedMap: function toOrderedMap() {
     // Use Late Binding here to solve the circular dependency.
@@ -5170,7 +6342,7 @@ mixin(KeyedCollection, {
 var KeyedCollectionPrototype = KeyedCollection.prototype;
 KeyedCollectionPrototype[IS_KEYED_SYMBOL] = true;
 KeyedCollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-KeyedCollectionPrototype.toJSON = toObject;
+KeyedCollectionPrototype.toJSON = toObject$1;
 KeyedCollectionPrototype.__toStringMapper = function (v, k) { return quoteString(k) + ': ' + quoteString(v); };
 
 mixin(IndexedCollection, {
@@ -5698,106 +6870,6 @@ function setProp(prototype, name) {
   }
 }
 
-/**
- * Returns a lazy Seq of `value` repeated `times` times. When `times` is
- * undefined, returns an infinite sequence of `value`.
- */
-var Repeat = /*@__PURE__*/(function (IndexedSeq$$1) {
-  function Repeat(value, times) {
-    if (!(this instanceof Repeat)) {
-      return new Repeat(value, times);
-    }
-    this._value = value;
-    this.size = times === undefined ? Infinity : Math.max(0, times);
-    if (this.size === 0) {
-      if (EMPTY_REPEAT) {
-        return EMPTY_REPEAT;
-      }
-      EMPTY_REPEAT = this;
-    }
-  }
-
-  if ( IndexedSeq$$1 ) Repeat.__proto__ = IndexedSeq$$1;
-  Repeat.prototype = Object.create( IndexedSeq$$1 && IndexedSeq$$1.prototype );
-  Repeat.prototype.constructor = Repeat;
-
-  Repeat.prototype.toString = function toString () {
-    if (this.size === 0) {
-      return 'Repeat []';
-    }
-    return 'Repeat [ ' + this._value + ' ' + this.size + ' times ]';
-  };
-
-  Repeat.prototype.get = function get (index, notSetValue) {
-    return this.has(index) ? this._value : notSetValue;
-  };
-
-  Repeat.prototype.includes = function includes (searchValue) {
-    return is(this._value, searchValue);
-  };
-
-  Repeat.prototype.slice = function slice (begin, end) {
-    var size = this.size;
-    return wholeSlice(begin, end, size)
-      ? this
-      : new Repeat(
-          this._value,
-          resolveEnd(end, size) - resolveBegin(begin, size)
-        );
-  };
-
-  Repeat.prototype.reverse = function reverse () {
-    return this;
-  };
-
-  Repeat.prototype.indexOf = function indexOf (searchValue) {
-    if (is(this._value, searchValue)) {
-      return 0;
-    }
-    return -1;
-  };
-
-  Repeat.prototype.lastIndexOf = function lastIndexOf (searchValue) {
-    if (is(this._value, searchValue)) {
-      return this.size;
-    }
-    return -1;
-  };
-
-  Repeat.prototype.__iterate = function __iterate (fn, reverse) {
-    var size = this.size;
-    var i = 0;
-    while (i !== size) {
-      if (fn(this._value, reverse ? size - ++i : i++, this) === false) {
-        break;
-      }
-    }
-    return i;
-  };
-
-  Repeat.prototype.__iterator = function __iterator (type, reverse) {
-    var this$1 = this;
-
-    var size = this.size;
-    var i = 0;
-    return new Iterator(
-      function () { return i === size
-          ? iteratorDone()
-          : iteratorValue(type, reverse ? size - ++i : i++, this$1._value); }
-    );
-  };
-
-  Repeat.prototype.equals = function equals (other) {
-    return other instanceof Repeat
-      ? is(this._value, other._value)
-      : deepEqual(other);
-  };
-
-  return Repeat;
-}(IndexedSeq));
-
-var EMPTY_REPEAT;
-
 function fromJS(value, converter) {
   return fromJSWith(
     [],
@@ -5839,941 +6911,11 @@ function defaultConverter(k, v) {
   return isKeyed(v) ? v.toMap() : v.toList();
 }
 
-var version = "4.0.0-rc.11";
-
-var Immutable = {
-  version: version,
-
-  Collection: Collection,
-  // Note: Iterable is deprecated
-  Iterable: Collection,
-
-  Seq: Seq,
-  Map: Map,
-  OrderedMap: OrderedMap,
-  List: List,
-  Stack: Stack,
-  Set: Set,
-  OrderedSet: OrderedSet,
-
-  Record: Record,
-  Range: Range,
-  Repeat: Repeat,
-
-  is: is,
-  fromJS: fromJS,
-  hash: hash,
-
-  isImmutable: isImmutable,
-  isCollection: isCollection,
-  isKeyed: isKeyed,
-  isIndexed: isIndexed,
-  isAssociative: isAssociative,
-  isOrdered: isOrdered,
-  isValueObject: isValueObject,
-  isSeq: isSeq,
-  isList: isList,
-  isMap: isMap,
-  isOrderedMap: isOrderedMap,
-  isStack: isStack,
-  isSet: isSet,
-  isOrderedSet: isOrderedSet,
-  isRecord: isRecord,
-
-  get: get,
-  getIn: getIn,
-  has: has,
-  hasIn: hasIn,
-  merge: merge$1,
-  mergeDeep: mergeDeep,
-  mergeWith: mergeWith$1,
-  mergeDeepWith: mergeDeepWith,
-  remove: remove,
-  removeIn: removeIn,
-  set: set,
-  setIn: setIn,
-  update: update,
-  updateIn: updateIn,
-};
-
-// Note: Iterable is deprecated
-var Iterable = (/* unused pure expression or super */ null && (Collection));
-
-/* harmony default export */ const immutable_es = ((/* unused pure expression or super */ null && (Immutable)));
-
-
-// EXTERNAL MODULE: external "@material-ui/icons/Close"
-var Close_ = __webpack_require__(777);
-var Close_default = /*#__PURE__*/__webpack_require__.n(Close_);
-
-// EXTERNAL MODULE: external "@material-ui/lab/TreeView"
-var TreeView_ = __webpack_require__(418);
-var TreeView_default = /*#__PURE__*/__webpack_require__.n(TreeView_);
-
-// EXTERNAL MODULE: ./node_modules/lodash/lodash.js
-var lodash = __webpack_require__(486);
-var lodash_default = /*#__PURE__*/__webpack_require__.n(lodash);
-
-// EXTERNAL MODULE: ./node_modules/lodash/last.js
-var last = __webpack_require__(928);
-var last_default = /*#__PURE__*/__webpack_require__.n(last);
-
-// CONCATENATED MODULE: ./src/utils.js
-
-
-var treeBuilder = function treeBuilder(_ref) {
-  var hierarchyField = _ref.hierarchyField,
-      itemId = _ref.itemId,
-      items = _ref.items;
-  return items.reduce(function (acc, current) {
-    var _acc$find, _acc$find$toSeq;
-
-    var hierarchies = current.get(hierarchyField).split(".");
-
-    if (hierarchies.length > 1) {
-      var parents = hierarchies.slice(0, hierarchies.length - 1);
-      return parents.reduce(function (parentAcc, parent) {
-        var parentIndex = parentAcc.findIndex(function (elem) {
-          return elem.get(itemId) === parent;
-        });
-
-        if (parentIndex >= 0) {
-          return parentAcc.setIn([parentIndex, "children"], parentAcc.getIn([parentIndex, "children"], fromJS([])).push(current));
-        }
-
-        return parentAcc.push(items.find(function (item) {
-          return item.get(itemId) === parent;
-        }));
-      }, acc);
-    }
-
-    return ((_acc$find = acc.find(function (elem) {
-      return elem.get(itemId) === current.get(itemId);
-    })) === null || _acc$find === void 0 ? void 0 : (_acc$find$toSeq = _acc$find.toSeq()) === null || _acc$find$toSeq === void 0 ? void 0 : _acc$find$toSeq.size) ? acc : acc.push(current);
-  }, fromJS([]));
-};
-var getDescription = function getDescription(_ref2) {
-  var _option$toSeq;
-
-  var option = _ref2.option,
-      hierarchyField = _ref2.hierarchyField,
-      itemLabel = _ref2.itemLabel;
-  return (option === null || option === void 0 ? void 0 : (_option$toSeq = option.toSeq()) === null || _option$toSeq === void 0 ? void 0 : _option$toSeq.size) ? "[".concat(last_default()(option.get(hierarchyField).split(".")), "] ").concat(option.get(itemLabel)) : "";
-};
-// EXTERNAL MODULE: external "@material-ui/core/SvgIcon"
-var SvgIcon_ = __webpack_require__(524);
-var SvgIcon_default = /*#__PURE__*/__webpack_require__.n(SvgIcon_);
-
-// CONCATENATED MODULE: ./src/tree-dropdown/components/icons/icons.js
-var _this = undefined,
-    _jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/icons/icons.js";
-
-/* eslint-disable react/no-multi-comp, react/display-name */
-
-
-var CloseSquare = function CloseSquare(props) {
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((SvgIcon_default()), Object.assign({
-    className: "close",
-    fontSize: "inherit",
-    style: {
-      width: 14,
-      height: 14
-    }
-  }, props, {
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 7,
-      columnNumber: 5
-    }
-  }), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("path", {
-    d: "M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z",
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 14,
-      columnNumber: 7
-    }
-  }));
-};
-var MinusSquare = function MinusSquare(props) {
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((SvgIcon_default()), Object.assign({
-    fontSize: "inherit",
-    style: {
-      width: 14,
-      height: 14
-    }
-  }, props, {
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 21,
-      columnNumber: 5
-    }
-  }), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("path", {
-    d: "M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z",
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 23,
-      columnNumber: 7
-    }
-  }));
-};
-var PlusSquare = function PlusSquare(props) {
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((SvgIcon_default()), Object.assign({
-    fontSize: "inherit",
-    style: {
-      width: 14,
-      height: 14
-    }
-  }, props, {
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 30,
-      columnNumber: 5
-    }
-  }), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("path", {
-    d: "M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z",
-    __self: _this,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 32,
-      columnNumber: 7
-    }
-  }));
-};
-// CONCATENATED MODULE: ./src/tree-dropdown/components/icons/index.js
-
-// EXTERNAL MODULE: external "@material-ui/core/Collapse"
-var Collapse_ = __webpack_require__(893);
-var Collapse_default = /*#__PURE__*/__webpack_require__.n(Collapse_);
-
-// EXTERNAL MODULE: external "@react-spring/web"
-var web_ = __webpack_require__(763);
-// CONCATENATED MODULE: ./src/tree-dropdown/components/item-transition/constants.js
-/* eslint-disable import/prefer-default-export */
-var constants_NAME = "TreeFieldItem";
-// CONCATENATED MODULE: ./src/tree-dropdown/components/item-transition/item-transition.jsx
-var item_transition_this = undefined,
-    item_transition_jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/item-transition/item-transition.jsx";
-
-
-
- // web.cjs is required for IE 11 support
-
-
-
-
-var ItemTransition = function ItemTransition(props) {
-  var propIn = props["in"];
-  var style = (0,web_.useSpring)({
-    from: {
-      opacity: 0,
-      transform: "translate3d(20px,0,0)"
-    },
-    to: {
-      opacity: propIn ? 1 : 0,
-      transform: "translate3d(".concat(propIn ? 0 : 20, "px,0,0)")
-    }
-  });
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(web_.animated.div, {
-    style: style,
-    __self: item_transition_this,
-    __source: {
-      fileName: item_transition_jsxFileName,
-      lineNumber: 20,
-      columnNumber: 5
-    }
-  }, /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((Collapse_default()), Object.assign({}, props, {
-    __self: item_transition_this,
-    __source: {
-      fileName: item_transition_jsxFileName,
-      lineNumber: 21,
-      columnNumber: 7
-    }
-  })));
-};
-
-ItemTransition.displayName = constants_NAME;
-ItemTransition.propTypes = {
-  // Show the component; triggers the enter or exit states
-  "in": (prop_types_default()).bool
-};
-/* harmony default export */ const item_transition = (ItemTransition);
-// CONCATENATED MODULE: ./src/tree-dropdown/components/item-transition/index.js
-
-// EXTERNAL MODULE: external "@material-ui/lab/TreeItem"
-var TreeItem_ = __webpack_require__(582);
-var TreeItem_default = /*#__PURE__*/__webpack_require__.n(TreeItem_);
-
-// CONCATENATED MODULE: ./src/tree-dropdown/components/tree-dropdown-item/constants.js
-/* eslint-disable import/prefer-default-export */
-var tree_dropdown_item_constants_NAME = "TreeDropdownItem";
-// CONCATENATED MODULE: ./src/tree-dropdown/components/tree-dropdown-item/theme.js
-/* eslint-disable import/prefer-default-export */
-var theme = function theme(_ref) {
-  var fade = _ref.fade,
-      currentTheme = _ref.currentTheme;
-  return {
-    iconContainer: {
-      "& .close": {
-        opacity: 0.3
-      }
-    },
-    group: {
-      marginLeft: 7,
-      paddingLeft: 18,
-      borderLeft: "1px dashed ".concat(fade(currentTheme.palette.text.primary, 0.4))
-    },
-    treeItem: {
-      textTransform: "none",
-      "&:hover": {
-        textDecoration: "underline",
-        backgroundColor: "transparent"
-      }
-    }
-  };
-};
-// CONCATENATED MODULE: ./src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx
-var tree_dropdown_item_this = undefined,
-    tree_dropdown_item_jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
-
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
-
-
-
-
-
-
-
-
-
-var TreeDropdownItem = function TreeDropdownItem(_ref) {
-  var label = _ref.label,
-      onClick = _ref.onClick,
-      rest = _objectWithoutProperties(_ref, ["label", "onClick"]);
-
-  var currentTheme = (0,styles_.useTheme)();
-  var classes = (0,styles_.makeStyles)(theme({
-    fade: styles_.fade,
-    currentTheme: currentTheme
-  }))();
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((TreeItem_default()), Object.assign({
-    classes: classes,
-    label: /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.Button, {
-      className: classes.treeItem,
-      onClick: onClick,
-      __self: tree_dropdown_item_this,
-      __source: {
-        fileName: tree_dropdown_item_jsxFileName,
-        lineNumber: 20,
-        columnNumber: 9
-      }
-    }, label)
-  }, rest, {
-    TransitionComponent: item_transition,
-    __self: tree_dropdown_item_this,
-    __source: {
-      fileName: tree_dropdown_item_jsxFileName,
-      lineNumber: 17,
-      columnNumber: 5
-    }
-  }));
-};
-
-TreeDropdownItem.displayName = tree_dropdown_item_constants_NAME;
-TreeDropdownItem.propTypes = {
-  label: (prop_types_default()).string.isRequired,
-  onClick: (prop_types_default()).func.isRequired
-};
-/* harmony default export */ const tree_dropdown_item = (TreeDropdownItem);
-// CONCATENATED MODULE: ./src/tree-dropdown/components/tree-dropdown-item/index.js
-
-// CONCATENATED MODULE: ./src/tree-dropdown/components/index.js
-
-
-
-// CONCATENATED MODULE: ./src/tree-dropdown/constants.js
-/* eslint-disable import/prefer-default-export */
-var tree_dropdown_constants_NAME = "TreeDropdown";
-// CONCATENATED MODULE: ./src/tree-dropdown/theme.js
-/* eslint-disable import/prefer-default-export */
-var theme_theme = function theme(width) {
-  return {
-    root: {
-      height: 264,
-      flexGrow: 1,
-      minWidth: "200px",
-      maxWidth: width > 200 ? "".concat(width, "px") : "200px"
-    },
-    selectPopOver: {
-      "& ul": {
-        padding: "10px"
-      }
-    }
-  };
-};
-// CONCATENATED MODULE: ./src/tree-dropdown/tree-dropdown.jsx
-var tree_dropdown_this = undefined,
-    tree_dropdown_jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-/* eslint-disable react/display-name, react/no-multi-comp */
-
-
-
-
-
-
-
-
-
-
-
-
-var TreeDropdown = function TreeDropdown(_ref) {
-  var anchorEl = _ref.anchorEl,
-      hierarchyField = _ref.hierarchyField,
-      itemId = _ref.itemId,
-      itemLabel = _ref.itemLabel,
-      onClose = _ref.onClose,
-      onSelected = _ref.onSelected,
-      open = _ref.open,
-      options = _ref.options,
-      selectedOption = _ref.selectedOption,
-      width = _ref.width;
-  var classes = (0,styles_.makeStyles)(theme_theme(width))();
-
-  var _React$useState = external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      expanded = _React$useState2[0],
-      setExpanded = _React$useState2[1];
-
-  var _React$useState3 = external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      selected = _React$useState4[0],
-      setSelected = _React$useState4[1];
-
-  var handleToggle = function handleToggle(event, nodeIds) {
-    setExpanded(nodeIds);
-  };
-
-  var handleSelect = function handleSelect(event, nodeIds) {
-    setSelected(nodeIds);
-  };
-
-  var renderItem = function renderItem(item) {
-    var _item$get;
-
-    var id = item.get(itemId);
-    var label = getDescription({
-      option: item,
-      itemLabel: itemLabel,
-      hierarchyField: hierarchyField
-    });
-
-    if ((_item$get = item.get("children")) === null || _item$get === void 0 ? void 0 : _item$get.size) {
-      return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(tree_dropdown_item, {
-        key: id,
-        nodeId: id,
-        label: label,
-        onClick: function onClick(event) {
-          return onSelected(event, id);
-        },
-        __self: tree_dropdown_this,
-        __source: {
-          fileName: tree_dropdown_jsxFileName,
-          lineNumber: 60,
-          columnNumber: 9
-        }
-      }, item.get("children", fromJS([])).map(function (child) {
-        return renderItem(child);
-      }));
-    }
-
-    return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(tree_dropdown_item, {
-      key: id,
-      nodeId: id,
-      label: label,
-      onClick: function onClick(event) {
-        return onSelected(event, id);
-      },
-      __self: tree_dropdown_this,
-      __source: {
-        fileName: tree_dropdown_jsxFileName,
-        lineNumber: 72,
-        columnNumber: 7
-      }
-    });
-  };
-
-  var renderOptions = function renderOptions() {
-    return options.map(function (option) {
-      return renderItem(option);
-    });
-  };
-
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.Popover, {
-    open: open,
-    anchorEl: anchorEl,
-    onClose: onClose,
-    disableRestoreFocus: true,
-    anchorOrigin: {
-      vertical: "top",
-      horizontal: "left"
-    },
-    transformOrigin: {
-      vertical: "top",
-      horizontal: "left"
-    },
-    className: classes.selectPopOver,
-    __self: tree_dropdown_this,
-    __source: {
-      fileName: tree_dropdown_jsxFileName,
-      lineNumber: 84,
-      columnNumber: 5
-    }
-  }, /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((TreeView_default()), {
-    className: classes.root,
-    defaultCollapseIcon: /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(MinusSquare, {
-      __self: tree_dropdown_this,
-      __source: {
-        fileName: tree_dropdown_jsxFileName,
-        lineNumber: 101,
-        columnNumber: 30
-      }
-    }),
-    defaultExpandIcon: /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(PlusSquare, {
-      __self: tree_dropdown_this,
-      __source: {
-        fileName: tree_dropdown_jsxFileName,
-        lineNumber: 102,
-        columnNumber: 28
-      }
-    }),
-    defaultEndIcon: /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(CloseSquare, {
-      __self: tree_dropdown_this,
-      __source: {
-        fileName: tree_dropdown_jsxFileName,
-        lineNumber: 103,
-        columnNumber: 25
-      }
-    }),
-    expanded: expanded,
-    selected: selected,
-    onNodeToggle: handleToggle,
-    onNodeSelect: handleSelect,
-    __self: tree_dropdown_this,
-    __source: {
-      fileName: tree_dropdown_jsxFileName,
-      lineNumber: 99,
-      columnNumber: 7
-    }
-  }, renderOptions()));
-};
-
-TreeDropdown.displayName = tree_dropdown_constants_NAME;
-TreeDropdown.defaultProps = {
-  hierarchyField: "hierarchy",
-  itemId: "id",
-  itemLabel: "label",
-  open: false,
-  options: fromJS([])
-};
-TreeDropdown.propTypes = {
-  anchorEl: (prop_types_default()).object,
-  hierarchyField: (prop_types_default()).string,
-  itemId: (prop_types_default()).string,
-  itemLabel: (prop_types_default()).string,
-  onClose: (prop_types_default()).func.isRequired,
-  onSelected: (prop_types_default()).func.isRequired,
-  open: (prop_types_default()).bool,
-  options: (prop_types_default()).object,
-  selectedOption: (prop_types_default()).object,
-  width: (prop_types_default()).number
-};
-/* harmony default export */ const tree_dropdown = (/*#__PURE__*/(0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.memo)(TreeDropdown, function (prev, next) {
-  return lodash_default()(prev.anchorEl, next.anchorEl) && prev.hierarchyField === next.hierarchyField && prev.itemId === next.itemId && prev.itemLabel === next.itemLabel && prev.options.equals(next.options) && prev.selectedOption === next.selectedOption && prev.open === next.open && lodash_default()(prev.selectedOption, next.selectedOption) && prev.width === next.width;
-}));
-// CONCATENATED MODULE: ./src/tree-dropdown/index.js
-
-// CONCATENATED MODULE: ./src/theme.js
-/* eslint-disable import/prefer-default-export */
-var treeSelectTheme = {
-  clearButton: {
-    padding: "3px 6px"
-  },
-  treeSelect: {
-    minWidth: "177px"
-  }
-};
-// CONCATENATED MODULE: ./src/tree-select-input.jsx
-var tree_select_input_this = undefined,
-    tree_select_input_jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-select-input.jsx";
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function tree_select_input_slicedToArray(arr, i) { return tree_select_input_arrayWithHoles(arr) || tree_select_input_iterableToArrayLimit(arr, i) || tree_select_input_unsupportedIterableToArray(arr, i) || tree_select_input_nonIterableRest(); }
-
-function tree_select_input_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function tree_select_input_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return tree_select_input_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return tree_select_input_arrayLikeToArray(o, minLen); }
-
-function tree_select_input_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function tree_select_input_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function tree_select_input_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
-
-
-
-
-
-
-
-var TreeSelectInput = /*#__PURE__*/(0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.forwardRef)(function (props, ref) {
-  var className = props.className,
-      classes = props.classes,
-      hierarchyField = props.hierarchyField,
-      disabled = props.disabled,
-      id = props.id,
-      name = props.name,
-      items = props.items,
-      itemId = props.itemId,
-      itemLabel = props.itemLabel,
-      valueProp = props.value,
-      defaultValue = props.defaultValue,
-      onChange = props.onChange;
-  var inputRef = (0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.useRef)(null);
-
-  var _React$useState = external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().useState(null),
-      _React$useState2 = tree_select_input_slicedToArray(_React$useState, 2),
-      displayNode = _React$useState2[0],
-      setDisplayNode = _React$useState2[1];
-
-  var handleRef = (0,core_.useForkRef)(ref, inputRef);
-  var css = (0,styles_.makeStyles)(treeSelectTheme)();
-
-  var _useState = (0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.useState)({}),
-      _useState2 = tree_select_input_slicedToArray(_useState, 2),
-      popOverOptions = _useState2[0],
-      setPopOverOptions = _useState2[1];
-
-  var _useControlled = (0,core_.useControlled)({
-    controlled: valueProp,
-    "default": defaultValue,
-    name: INPUT_NAME
-  }),
-      _useControlled2 = tree_select_input_slicedToArray(_useControlled, 2),
-      value = _useControlled2[0],
-      setValueState = _useControlled2[1];
-
-  var open = Boolean(popOverOptions.anchorEl);
-  var selectedOption = items.find(function (item) {
-    return item.get(itemId) === value;
-  });
-  var description = getDescription({
-    option: selectedOption,
-    itemLabel: itemLabel,
-    hierarchyField: hierarchyField
-  });
-  var treeOptions = treeBuilder({
-    hierarchyField: hierarchyField,
-    itemId: itemId,
-    items: items
-  });
-
-  var handlePopoverOpen = function handlePopoverOpen(event) {
-    setPopOverOptions({
-      anchorEl: event.currentTarget,
-      width: event.currentTarget.getBoundingClientRect().width
-    });
-  };
-
-  var handlePopoverClose = function handlePopoverClose() {
-    setPopOverOptions({
-      width: popOverOptions.width
-    });
-  };
-
-  var triggerChange = function triggerChange(event, nextValue) {
-    if (onChange) {
-      event.persist();
-      Object.defineProperty(event, "target", {
-        writable: true,
-        value: {
-          value: nextValue,
-          name: name
-        }
-      });
-      onChange(event);
-    }
-  };
-
-  var handleChange = function handleChange(event) {
-    setValueState(event.target.value);
-
-    if (onChange) {
-      onChange(event);
-    }
-  };
-
-  var onSelected = (0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.useCallback)(function (event, nodeId) {
-    setValueState(nodeId);
-    triggerChange(event, nodeId);
-    handlePopoverClose();
-  }, [onChange]);
-
-  var onClear = function onClear(event) {
-    setValueState("");
-    triggerChange(event, "");
-  };
-
-  (0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.useImperativeHandle)(handleRef, function () {
-    return {
-      focus: function focus() {
-        displayNode.focus();
-      },
-      node: inputRef.current,
-      value: value
-    };
-  }, [value]);
-  return /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default()).Fragment, null, /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("div", {
-    id: id,
-    ref: setDisplayNode,
-    role: "button",
-    "aria-expanded": open ? "true" : undefined,
-    tabIndex: 0,
-    onFocus: handlePopoverOpen,
-    onMouseDown: handlePopoverOpen,
-    className: clsx_m(classes.root, classes.select, classes.selectMenu, _defineProperty({}, classes.disabled, disabled), className, css.treeSelect),
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 115,
-      columnNumber: 7
-    }
-  }, description ||
-  /*#__PURE__*/
-  // eslint-disable-next-line react/no-danger
-  external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("span", {
-    dangerouslySetInnerHTML: {
-      __html: "&#8203;"
-    },
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 136,
-      columnNumber: 11
-    }
-  })), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement("input", {
-    value: value,
-    name: name,
-    ref: inputRef,
-    "aria-hidden": true,
-    onChange: handleChange,
-    className: classes.nativeInput,
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 139,
-      columnNumber: 7
-    }
-  }), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.IconButton, {
-    "aria-label": "clear",
-    className: css.clearButton,
-    onClick: onClear,
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 147,
-      columnNumber: 7
-    }
-  }, /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement((Close_default()), {
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 152,
-      columnNumber: 9
-    }
-  })), /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(tree_dropdown, {
-    selectedOption: selectedOption,
-    open: open,
-    anchorEl: popOverOptions.anchorEl,
-    onClose: handlePopoverClose,
-    options: treeOptions,
-    width: popOverOptions.width,
-    onSelected: onSelected,
-    hierarchyField: hierarchyField,
-    itemId: itemId,
-    itemLabel: itemLabel,
-    __self: tree_select_input_this,
-    __source: {
-      fileName: tree_select_input_jsxFileName,
-      lineNumber: 154,
-      columnNumber: 7
-    }
-  }));
-});
-TreeSelectInput.displayName = INPUT_NAME;
-TreeSelectInput.defaultProps = {
-  defaultValue: "",
-  disabled: false,
-  hierarchyField: "hierarchy",
-  itemId: "id",
-  itemLabel: "label",
-  items: fromJS([])
-};
-TreeSelectInput.propTypes = {
-  classes: (prop_types_default()).object,
-  className: (prop_types_default()).string,
-  defaultValue: (prop_types_default()).string,
-  disabled: (prop_types_default()).bool,
-  hierarchyField: (prop_types_default()).string,
-  id: (prop_types_default()).string.isRequired,
-  itemId: (prop_types_default()).string,
-  itemLabel: (prop_types_default()).string,
-  items: (prop_types_default()).object,
-  name: (prop_types_default()).string.isRequired,
-  onChange: (prop_types_default()).func,
-  value: (prop_types_default()).string
-};
-/* harmony default export */ const tree_select_input = (TreeSelectInput);
-// CONCATENATED MODULE: ./src/mui-tree-select.jsx
-var mui_tree_select_this = undefined,
-    mui_tree_select_jsxFileName = "/home/dennis/workspace/mui-tree-select/src/mui-tree-select.jsx";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { mui_tree_select_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function mui_tree_select_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-
-
-
-
-
-
-var MuiTreeSelect = /*#__PURE__*/(0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.forwardRef)(function (props, ref) {
-  var inputProps = props.inputProps,
-      inputLabelProps = props.inputLabelProps,
-      label = props.label,
-      id = props.id,
-      value = props.value;
-  var treeSelect = /*#__PURE__*/(0,external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_.cloneElement)( /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.Input, {
-    __self: mui_tree_select_this,
-    __source: {
-      fileName: mui_tree_select_jsxFileName,
-      lineNumber: 13,
-      columnNumber: 35
-    }
-  }), {
-    inputComponent: tree_select_input,
-    inputProps: _objectSpread(_objectSpread({}, props), inputProps),
-    label: label,
-    ref: ref
-  });
-  var shrink = (inputLabelProps === null || inputLabelProps === void 0 ? void 0 : inputLabelProps.shrink) !== undefined ? inputLabelProps.shrink : Boolean(value);
-  return label ? /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.FormControl, {
-    __self: mui_tree_select_this,
-    __source: {
-      fileName: mui_tree_select_jsxFileName,
-      lineNumber: 26,
-      columnNumber: 5
-    }
-  }, /*#__PURE__*/external_commonjs_react_commonjs2_react_amd_react_umd_react_root_React_default().createElement(core_.InputLabel, {
-    htmlFor: id,
-    shrink: shrink,
-    __self: mui_tree_select_this,
-    __source: {
-      fileName: mui_tree_select_jsxFileName,
-      lineNumber: 27,
-      columnNumber: 7
-    }
-  }, label), treeSelect) : treeSelect;
-});
-MuiTreeSelect.displayName = NAME;
-MuiTreeSelect.propTypes = {
-  id: (prop_types_default()).string,
-  inputLabelProps: (prop_types_default()).object,
-  inputProps: (prop_types_default()).object,
-  label: (prop_types_default()).string,
-  value: (prop_types_default()).string
-};
-/* harmony default export */ const mui_tree_select = ((0,styles_.withStyles)(NativeSelect_.styles, {
-  name: NAME
-})(MuiTreeSelect));
-// CONCATENATED MODULE: ./src/index.js
-
-
-/***/ }),
-
-/***/ 928:
-/***/ ((module) => {
-
-/**
- * Gets the last element of `array`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Array
- * @param {Array} array The array to query.
- * @returns {*} Returns the last element of `array`.
- * @example
- *
- * _.last([1, 2, 3]);
- * // => 3
- */
-function last(array) {
-  var length = array == null ? 0 : array.length;
-  return length ? array[length - 1] : undefined;
-}
-
-module.exports = last;
-
-
-/***/ }),
-
-/***/ 486:
-/***/ (function(module, exports, __webpack_require__) {
-
-/* module decorator */ module = __webpack_require__.nmd(module);
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @license
- * Lodash <https://lodash.com/>
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-;(function() {
+var lodash = createCommonjsModule(function (module, exports) {
+(function() {
 
   /** Used as a safe reference for `undefined` in pre-ES5 environments. */
-  var undefined;
+  var undefined$1;
 
   /** Used as the semantic version number. */
   var VERSION = '4.17.20';
@@ -7177,7 +7319,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       freeParseInt = parseInt;
 
   /** Detect free variable `global` from Node.js. */
-  var freeGlobal = typeof __webpack_require__.g == 'object' && __webpack_require__.g && __webpack_require__.g.Object === Object && __webpack_require__.g;
+  var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
 
   /** Detect free variable `self`. */
   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -7186,10 +7328,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   var root = freeGlobal || freeSelf || Function('return this')();
 
   /** Detect free variable `exports`. */
-  var freeExports =  true && exports && !exports.nodeType && exports;
+  var freeExports =  exports && !exports.nodeType && exports;
 
   /** Detect free variable `module`. */
-  var freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
+  var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
 
   /** Detect the popular CommonJS extension `module.exports`. */
   var moduleExports = freeModule && freeModule.exports === freeExports;
@@ -7641,7 +7783,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    */
   function baseProperty(key) {
     return function(object) {
-      return object == null ? undefined : object[key];
+      return object == null ? undefined$1 : object[key];
     };
   }
 
@@ -7654,7 +7796,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    */
   function basePropertyOf(object) {
     return function(key) {
-      return object == null ? undefined : object[key];
+      return object == null ? undefined$1 : object[key];
     };
   }
 
@@ -7716,8 +7858,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     while (++index < length) {
       var current = iteratee(array[index]);
-      if (current !== undefined) {
-        result = result === undefined ? current : (result + current);
+      if (current !== undefined$1) {
+        result = result === undefined$1 ? current : (result + current);
       }
     }
     return result;
@@ -7890,7 +8032,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {*} Returns the property value.
    */
   function getValue(object, key) {
-    return object == null ? undefined : object[key];
+    return object == null ? undefined$1 : object[key];
   }
 
   /**
@@ -8224,17 +8366,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     );
 
     /** Built-in value references. */
-    var Buffer = moduleExports ? context.Buffer : undefined,
+    var Buffer = moduleExports ? context.Buffer : undefined$1,
         Symbol = context.Symbol,
         Uint8Array = context.Uint8Array,
-        allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined,
+        allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined$1,
         getPrototype = overArg(Object.getPrototypeOf, Object),
         objectCreate = Object.create,
         propertyIsEnumerable = objectProto.propertyIsEnumerable,
         splice = arrayProto.splice,
-        spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined,
-        symIterator = Symbol ? Symbol.iterator : undefined,
-        symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+        spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined$1,
+        symIterator = Symbol ? Symbol.iterator : undefined$1,
+        symToStringTag = Symbol ? Symbol.toStringTag : undefined$1;
 
     var defineProperty = (function() {
       try {
@@ -8253,7 +8395,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     var nativeCeil = Math.ceil,
         nativeFloor = Math.floor,
         nativeGetSymbols = Object.getOwnPropertySymbols,
-        nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
+        nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined$1,
         nativeIsFinite = context.isFinite,
         nativeJoin = arrayProto.join,
         nativeKeys = overArg(Object.keys, Object),
@@ -8286,9 +8428,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         weakMapCtorString = toSource(WeakMap);
 
     /** Used to convert symbols to primitives and strings. */
-    var symbolProto = Symbol ? Symbol.prototype : undefined,
-        symbolValueOf = symbolProto ? symbolProto.valueOf : undefined,
-        symbolToString = symbolProto ? symbolProto.toString : undefined;
+    var symbolProto = Symbol ? Symbol.prototype : undefined$1,
+        symbolValueOf = symbolProto ? symbolProto.valueOf : undefined$1,
+        symbolToString = symbolProto ? symbolProto.toString : undefined$1;
 
     /*------------------------------------------------------------------------*/
 
@@ -8440,7 +8582,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
         object.prototype = proto;
         var result = new object;
-        object.prototype = undefined;
+        object.prototype = undefined$1;
         return result;
       };
     }());
@@ -8466,7 +8608,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       this.__actions__ = [];
       this.__chain__ = !!chainAll;
       this.__index__ = 0;
-      this.__values__ = undefined;
+      this.__values__ = undefined$1;
     }
 
     /**
@@ -8717,9 +8859,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var data = this.__data__;
       if (nativeCreate) {
         var result = data[key];
-        return result === HASH_UNDEFINED ? undefined : result;
+        return result === HASH_UNDEFINED ? undefined$1 : result;
       }
-      return hasOwnProperty.call(data, key) ? data[key] : undefined;
+      return hasOwnProperty.call(data, key) ? data[key] : undefined$1;
     }
 
     /**
@@ -8733,7 +8875,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function hashHas(key) {
       var data = this.__data__;
-      return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+      return nativeCreate ? (data[key] !== undefined$1) : hasOwnProperty.call(data, key);
     }
 
     /**
@@ -8749,7 +8891,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function hashSet(key, value) {
       var data = this.__data__;
       this.size += this.has(key) ? 0 : 1;
-      data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+      data[key] = (nativeCreate && value === undefined$1) ? HASH_UNDEFINED : value;
       return this;
     }
 
@@ -8831,7 +8973,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var data = this.__data__,
           index = assocIndexOf(data, key);
 
-      return index < 0 ? undefined : data[index][1];
+      return index < 0 ? undefined$1 : data[index][1];
     }
 
     /**
@@ -9180,7 +9322,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function arraySample(array) {
       var length = array.length;
-      return length ? array[baseRandom(0, length - 1)] : undefined;
+      return length ? array[baseRandom(0, length - 1)] : undefined$1;
     }
 
     /**
@@ -9216,8 +9358,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {*} value The value to assign.
      */
     function assignMergeValue(object, key, value) {
-      if ((value !== undefined && !eq(object[key], value)) ||
-          (value === undefined && !(key in object))) {
+      if ((value !== undefined$1 && !eq(object[key], value)) ||
+          (value === undefined$1 && !(key in object))) {
         baseAssignValue(object, key, value);
       }
     }
@@ -9235,7 +9377,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function assignValue(object, key, value) {
       var objValue = object[key];
       if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-          (value === undefined && !(key in object))) {
+          (value === undefined$1 && !(key in object))) {
         baseAssignValue(object, key, value);
       }
     }
@@ -9339,7 +9481,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           skip = object == null;
 
       while (++index < length) {
-        result[index] = skip ? undefined : get(object, paths[index]);
+        result[index] = skip ? undefined$1 : get(object, paths[index]);
       }
       return result;
     }
@@ -9355,10 +9497,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function baseClamp(number, lower, upper) {
       if (number === number) {
-        if (upper !== undefined) {
+        if (upper !== undefined$1) {
           number = number <= upper ? number : upper;
         }
-        if (lower !== undefined) {
+        if (lower !== undefined$1) {
           number = number >= lower ? number : lower;
         }
       }
@@ -9390,7 +9532,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (customizer) {
         result = object ? customizer(value, key, object, stack) : customizer(value);
       }
-      if (result !== undefined) {
+      if (result !== undefined$1) {
         return result;
       }
       if (!isObject(value)) {
@@ -9445,7 +9587,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         ? (isFlat ? getAllKeysIn : getAllKeys)
         : (isFlat ? keysIn : keys);
 
-      var props = isArr ? undefined : keysFunc(value);
+      var props = isArr ? undefined$1 : keysFunc(value);
       arrayEach(props || value, function(subValue, key) {
         if (props) {
           key = subValue;
@@ -9490,7 +9632,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             predicate = source[key],
             value = object[key];
 
-        if ((value === undefined && !(key in object)) || !predicate(value)) {
+        if ((value === undefined$1 && !(key in object)) || !predicate(value)) {
           return false;
         }
       }
@@ -9511,7 +9653,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      return setTimeout(function() { func.apply(undefined, args); }, wait);
+      return setTimeout(function() { func.apply(undefined$1, args); }, wait);
     }
 
     /**
@@ -9626,7 +9768,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         var value = array[index],
             current = iteratee(value);
 
-        if (current != null && (computed === undefined
+        if (current != null && (computed === undefined$1
               ? (current === current && !isSymbol(current))
               : comparator(current, computed)
             )) {
@@ -9654,7 +9796,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (start < 0) {
         start = -start > length ? 0 : (length + start);
       }
-      end = (end === undefined || end > length) ? length : toInteger(end);
+      end = (end === undefined$1 || end > length) ? length : toInteger(end);
       if (end < 0) {
         end += length;
       }
@@ -9798,7 +9940,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       while (object != null && index < length) {
         object = object[toKey(path[index++])];
       }
-      return (index && index == length) ? object : undefined;
+      return (index && index == length) ? object : undefined$1;
     }
 
     /**
@@ -9826,7 +9968,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function baseGetTag(value) {
       if (value == null) {
-        return value === undefined ? undefinedTag : nullTag;
+        return value === undefined$1 ? undefinedTag : nullTag;
       }
       return (symToStringTag && symToStringTag in Object(value))
         ? getRawTag(value)
@@ -9910,7 +10052,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         maxLength = nativeMin(array.length, maxLength);
         caches[othIndex] = !comparator && (iteratee || (length >= 120 && array.length >= 120))
           ? new SetCache(othIndex && array)
-          : undefined;
+          : undefined$1;
       }
       array = arrays[0];
 
@@ -9978,7 +10120,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       path = castPath(path, object);
       object = parent(object, path);
       var func = object == null ? object : object[toKey(last(path))];
-      return func == null ? undefined : apply(func, object, args);
+      return func == null ? undefined$1 : apply(func, object, args);
     }
 
     /**
@@ -10143,7 +10285,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             srcValue = data[1];
 
         if (noCustomizer && data[2]) {
-          if (objValue === undefined && !(key in object)) {
+          if (objValue === undefined$1 && !(key in object)) {
             return false;
           }
         } else {
@@ -10151,7 +10293,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           if (customizer) {
             var result = customizer(objValue, srcValue, key, object, source, stack);
           }
-          if (!(result === undefined
+          if (!(result === undefined$1
                 ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
                 : result
               )) {
@@ -10340,7 +10482,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       return function(object) {
         var objValue = get(object, path);
-        return (objValue === undefined && objValue === srcValue)
+        return (objValue === undefined$1 && objValue === srcValue)
           ? hasIn(object, path)
           : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
       };
@@ -10369,9 +10511,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         else {
           var newValue = customizer
             ? customizer(safeGet(object, key), srcValue, (key + ''), object, source, stack)
-            : undefined;
+            : undefined$1;
 
-          if (newValue === undefined) {
+          if (newValue === undefined$1) {
             newValue = srcValue;
           }
           assignMergeValue(object, key, newValue);
@@ -10405,9 +10547,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       var newValue = customizer
         ? customizer(objValue, srcValue, (key + ''), object, source, stack)
-        : undefined;
+        : undefined$1;
 
-      var isCommon = newValue === undefined;
+      var isCommon = newValue === undefined$1;
 
       if (isCommon) {
         var isArr = isArray(srcValue),
@@ -10470,7 +10612,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return;
       }
       n += n < 0 ? length : 0;
-      return isIndex(n, length) ? array[n] : undefined;
+      return isIndex(n, length) ? array[n] : undefined$1;
     }
 
     /**
@@ -10760,8 +10902,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
         if (index != lastIndex) {
           var objValue = nested[key];
-          newValue = customizer ? customizer(objValue, key, nested) : undefined;
-          if (newValue === undefined) {
+          newValue = customizer ? customizer(objValue, key, nested) : undefined$1;
+          if (newValue === undefined$1) {
             newValue = isObject(objValue)
               ? objValue
               : (isIndex(path[index + 1]) ? [] : {});
@@ -10920,12 +11062,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
-          valIsUndefined = value === undefined;
+          valIsUndefined = value === undefined$1;
 
       while (low < high) {
         var mid = nativeFloor((low + high) / 2),
             computed = iteratee(array[mid]),
-            othIsDefined = computed !== undefined,
+            othIsDefined = computed !== undefined$1,
             othIsNull = computed === null,
             othIsReflexive = computed === computed,
             othIsSymbol = isSymbol(computed);
@@ -11200,7 +11342,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           result = {};
 
       while (++index < length) {
-        var value = index < valsLength ? values[index] : undefined;
+        var value = index < valsLength ? values[index] : undefined$1;
         assignFunc(result, props[index], value);
       }
       return result;
@@ -11265,7 +11407,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function castSlice(array, start, end) {
       var length = array.length;
-      end = end === undefined ? length : end;
+      end = end === undefined$1 ? length : end;
       return (!start && end >= length) ? array : baseSlice(array, start, end);
     }
 
@@ -11371,12 +11513,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function compareAscending(value, other) {
       if (value !== other) {
-        var valIsDefined = value !== undefined,
+        var valIsDefined = value !== undefined$1,
             valIsNull = value === null,
             valIsReflexive = value === value,
             valIsSymbol = isSymbol(value);
 
-        var othIsDefined = other !== undefined,
+        var othIsDefined = other !== undefined$1,
             othIsNull = other === null,
             othIsReflexive = other === other,
             othIsSymbol = isSymbol(other);
@@ -11553,9 +11695,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
         var newValue = customizer
           ? customizer(object[key], source[key], key, object, source)
-          : undefined;
+          : undefined$1;
 
-        if (newValue === undefined) {
+        if (newValue === undefined$1) {
           newValue = source[key];
         }
         if (isNew) {
@@ -11619,15 +11761,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       return baseRest(function(object, sources) {
         var index = -1,
             length = sources.length,
-            customizer = length > 1 ? sources[length - 1] : undefined,
-            guard = length > 2 ? sources[2] : undefined;
+            customizer = length > 1 ? sources[length - 1] : undefined$1,
+            guard = length > 2 ? sources[2] : undefined$1;
 
         customizer = (assigner.length > 3 && typeof customizer == 'function')
           ? (length--, customizer)
-          : undefined;
+          : undefined$1;
 
         if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-          customizer = length < 3 ? undefined : customizer;
+          customizer = length < 3 ? undefined$1 : customizer;
           length = 1;
         }
         object = Object(object);
@@ -11728,7 +11870,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
         var strSymbols = hasUnicode(string)
           ? stringToArray(string)
-          : undefined;
+          : undefined$1;
 
         var chr = strSymbols
           ? strSymbols[0]
@@ -11816,8 +11958,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         length -= holders.length;
         if (length < arity) {
           return createRecurry(
-            func, bitmask, createHybrid, wrapper.placeholder, undefined,
-            args, holders, undefined, undefined, arity - length);
+            func, bitmask, createHybrid, wrapper.placeholder, undefined$1,
+            args, holders, undefined$1, undefined$1, arity - length);
         }
         var fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
         return apply(fn, this, args);
@@ -11841,7 +11983,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           predicate = function(key) { return iteratee(iterable[key], key, iterable); };
         }
         var index = findIndexFunc(collection, predicate, fromIndex);
-        return index > -1 ? iterable[iteratee ? collection[index] : index] : undefined;
+        return index > -1 ? iterable[iteratee ? collection[index] : index] : undefined$1;
       };
     }
 
@@ -11875,7 +12017,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           func = funcs[index];
 
           var funcName = getFuncName(func),
-              data = funcName == 'wrapper' ? getData(func) : undefined;
+              data = funcName == 'wrapper' ? getData(func) : undefined$1;
 
           if (data && isLaziable(data[0]) &&
                 data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) &&
@@ -11931,7 +12073,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           isBindKey = bitmask & WRAP_BIND_KEY_FLAG,
           isCurried = bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG),
           isFlip = bitmask & WRAP_FLIP_FLAG,
-          Ctor = isBindKey ? undefined : createCtor(func);
+          Ctor = isBindKey ? undefined$1 : createCtor(func);
 
       function wrapper() {
         var length = arguments.length,
@@ -12004,14 +12146,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function createMathOperation(operator, defaultValue) {
       return function(value, other) {
         var result;
-        if (value === undefined && other === undefined) {
+        if (value === undefined$1 && other === undefined$1) {
           return defaultValue;
         }
-        if (value !== undefined) {
+        if (value !== undefined$1) {
           result = value;
         }
-        if (other !== undefined) {
-          if (result === undefined) {
+        if (other !== undefined$1) {
+          if (result === undefined$1) {
             return other;
           }
           if (typeof value == 'string' || typeof other == 'string') {
@@ -12056,7 +12198,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {string} Returns the padding for `string`.
      */
     function createPadding(length, chars) {
-      chars = chars === undefined ? ' ' : baseToString(chars);
+      chars = chars === undefined$1 ? ' ' : baseToString(chars);
 
       var charsLength = chars.length;
       if (charsLength < 2) {
@@ -12113,17 +12255,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function createRange(fromRight) {
       return function(start, end, step) {
         if (step && typeof step != 'number' && isIterateeCall(start, end, step)) {
-          end = step = undefined;
+          end = step = undefined$1;
         }
         // Ensure the sign of `-0` is preserved.
         start = toFinite(start);
-        if (end === undefined) {
+        if (end === undefined$1) {
           end = start;
           start = 0;
         } else {
           end = toFinite(end);
         }
-        step = step === undefined ? (start < end ? 1 : -1) : toFinite(step);
+        step = step === undefined$1 ? (start < end ? 1 : -1) : toFinite(step);
         return baseRange(start, end, step, fromRight);
       };
     }
@@ -12164,10 +12306,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createRecurry(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {
       var isCurry = bitmask & WRAP_CURRY_FLAG,
-          newHolders = isCurry ? holders : undefined,
-          newHoldersRight = isCurry ? undefined : holders,
-          newPartials = isCurry ? partials : undefined,
-          newPartialsRight = isCurry ? undefined : partials;
+          newHolders = isCurry ? holders : undefined$1,
+          newHoldersRight = isCurry ? undefined$1 : holders,
+          newPartials = isCurry ? partials : undefined$1,
+          newPartialsRight = isCurry ? undefined$1 : partials;
 
       bitmask |= (isCurry ? WRAP_PARTIAL_FLAG : WRAP_PARTIAL_RIGHT_FLAG);
       bitmask &= ~(isCurry ? WRAP_PARTIAL_RIGHT_FLAG : WRAP_PARTIAL_FLAG);
@@ -12180,7 +12322,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         newHoldersRight, argPos, ary, arity
       ];
 
-      var result = wrapFunc.apply(undefined, newData);
+      var result = wrapFunc.apply(undefined$1, newData);
       if (isLaziable(func)) {
         setData(result, newData);
       }
@@ -12277,19 +12419,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var length = partials ? partials.length : 0;
       if (!length) {
         bitmask &= ~(WRAP_PARTIAL_FLAG | WRAP_PARTIAL_RIGHT_FLAG);
-        partials = holders = undefined;
+        partials = holders = undefined$1;
       }
-      ary = ary === undefined ? ary : nativeMax(toInteger(ary), 0);
-      arity = arity === undefined ? arity : toInteger(arity);
+      ary = ary === undefined$1 ? ary : nativeMax(toInteger(ary), 0);
+      arity = arity === undefined$1 ? arity : toInteger(arity);
       length -= holders ? holders.length : 0;
 
       if (bitmask & WRAP_PARTIAL_RIGHT_FLAG) {
         var partialsRight = partials,
             holdersRight = holders;
 
-        partials = holders = undefined;
+        partials = holders = undefined$1;
       }
-      var data = isBindKey ? undefined : getData(func);
+      var data = isBindKey ? undefined$1 : getData(func);
 
       var newData = [
         func, bitmask, thisArg, partials, holders, partialsRight, holdersRight,
@@ -12304,7 +12446,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       thisArg = newData[2];
       partials = newData[3];
       holders = newData[4];
-      arity = newData[9] = newData[9] === undefined
+      arity = newData[9] = newData[9] === undefined$1
         ? (isBindKey ? 0 : func.length)
         : nativeMax(newData[9] - length, 0);
 
@@ -12318,7 +12460,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       } else if ((bitmask == WRAP_PARTIAL_FLAG || bitmask == (WRAP_BIND_FLAG | WRAP_PARTIAL_FLAG)) && !holders.length) {
         result = createPartial(func, bitmask, thisArg, partials);
       } else {
-        result = createHybrid.apply(undefined, newData);
+        result = createHybrid.apply(undefined$1, newData);
       }
       var setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
@@ -12337,7 +12479,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the value to assign.
      */
     function customDefaultsAssignIn(objValue, srcValue, key, object) {
-      if (objValue === undefined ||
+      if (objValue === undefined$1 ||
           (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
         return srcValue;
       }
@@ -12362,7 +12504,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isObject(objValue) && isObject(srcValue)) {
         // Recursively merge objects and arrays (susceptible to call stack limits).
         stack.set(srcValue, objValue);
-        baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+        baseMerge(objValue, srcValue, undefined$1, customDefaultsMerge, stack);
         stack['delete'](srcValue);
       }
       return objValue;
@@ -12378,7 +12520,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the uncloned value or `undefined` to defer cloning to `_.cloneDeep`.
      */
     function customOmitClone(value) {
-      return isPlainObject(value) ? undefined : value;
+      return isPlainObject(value) ? undefined$1 : value;
     }
 
     /**
@@ -12410,7 +12552,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       var index = -1,
           result = true,
-          seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+          seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined$1;
 
       stack.set(array, other);
       stack.set(other, array);
@@ -12425,7 +12567,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             ? customizer(othValue, arrValue, index, other, array, stack)
             : customizer(arrValue, othValue, index, array, other, stack);
         }
-        if (compared !== undefined) {
+        if (compared !== undefined$1) {
           if (compared) {
             continue;
           }
@@ -12590,7 +12732,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             : customizer(objValue, othValue, key, object, other, stack);
         }
         // Recursively compare objects (susceptible to call stack limits).
-        if (!(compared === undefined
+        if (!(compared === undefined$1
               ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
               : compared
             )) {
@@ -12624,7 +12766,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new function.
      */
     function flatRest(func) {
-      return setToString(overRest(func, undefined, flatten), func + '');
+      return setToString(overRest(func, undefined$1, flatten), func + '');
     }
 
     /**
@@ -12757,7 +12899,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function getNative(object, key) {
       var value = getValue(object, key);
-      return baseIsNative(value) ? value : undefined;
+      return baseIsNative(value) ? value : undefined$1;
     }
 
     /**
@@ -12772,7 +12914,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           tag = value[symToStringTag];
 
       try {
-        value[symToStringTag] = undefined;
+        value[symToStringTag] = undefined$1;
         var unmasked = true;
       } catch (e) {}
 
@@ -12837,7 +12979,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         (WeakMap && getTag(new WeakMap) != weakMapTag)) {
       getTag = function(value) {
         var result = baseGetTag(value),
-            Ctor = result == objectTag ? value.constructor : undefined,
+            Ctor = result == objectTag ? value.constructor : undefined$1,
             ctorString = Ctor ? toSource(Ctor) : '';
 
         if (ctorString) {
@@ -13195,7 +13337,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           return false;
         }
         return object[key] === srcValue &&
-          (srcValue !== undefined || (key in Object(object)));
+          (srcValue !== undefined$1 || (key in Object(object)));
       };
     }
 
@@ -13330,7 +13472,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new function.
      */
     function overRest(func, start, transform) {
-      start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+      start = nativeMax(start === undefined$1 ? (func.length - 1) : start, 0);
       return function() {
         var args = arguments,
             index = -1,
@@ -13379,7 +13521,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
       while (length--) {
         var index = indexes[length];
-        array[length] = isIndex(index, arrLength) ? oldArray[index] : undefined;
+        array[length] = isIndex(index, arrLength) ? oldArray[index] : undefined$1;
       }
       return array;
     }
@@ -13482,7 +13624,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         } else {
           count = 0;
         }
-        return func.apply(undefined, arguments);
+        return func.apply(undefined$1, arguments);
       };
     }
 
@@ -13499,7 +13641,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           length = array.length,
           lastIndex = length - 1;
 
-      size = size === undefined ? length : size;
+      size = size === undefined$1 ? length : size;
       while (++index < size) {
         var rand = baseRandom(index, lastIndex),
             value = array[rand];
@@ -13623,7 +13765,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [['a', 'b', 'c'], ['d']]
      */
     function chunk(array, size, guard) {
-      if ((guard ? isIterateeCall(array, size, guard) : size === undefined)) {
+      if ((guard ? isIterateeCall(array, size, guard) : size === undefined$1)) {
         size = 1;
       } else {
         size = nativeMax(toInteger(size), 0);
@@ -13765,7 +13907,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     var differenceBy = baseRest(function(array, values) {
       var iteratee = last(values);
       if (isArrayLikeObject(iteratee)) {
-        iteratee = undefined;
+        iteratee = undefined$1;
       }
       return isArrayLikeObject(array)
         ? baseDifference(array, baseFlatten(values, 1, isArrayLikeObject, true), getIteratee(iteratee, 2))
@@ -13798,10 +13940,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     var differenceWith = baseRest(function(array, values) {
       var comparator = last(values);
       if (isArrayLikeObject(comparator)) {
-        comparator = undefined;
+        comparator = undefined$1;
       }
       return isArrayLikeObject(array)
-        ? baseDifference(array, baseFlatten(values, 1, isArrayLikeObject, true), undefined, comparator)
+        ? baseDifference(array, baseFlatten(values, 1, isArrayLikeObject, true), undefined$1, comparator)
         : [];
     });
 
@@ -13835,7 +13977,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!length) {
         return [];
       }
-      n = (guard || n === undefined) ? 1 : toInteger(n);
+      n = (guard || n === undefined$1) ? 1 : toInteger(n);
       return baseSlice(array, n < 0 ? 0 : n, length);
     }
 
@@ -13869,7 +14011,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!length) {
         return [];
       }
-      n = (guard || n === undefined) ? 1 : toInteger(n);
+      n = (guard || n === undefined$1) ? 1 : toInteger(n);
       n = length - n;
       return baseSlice(array, 0, n < 0 ? 0 : n);
     }
@@ -14085,7 +14227,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return -1;
       }
       var index = length - 1;
-      if (fromIndex !== undefined) {
+      if (fromIndex !== undefined$1) {
         index = toInteger(fromIndex);
         index = fromIndex < 0
           ? nativeMax(length + index, 0)
@@ -14157,7 +14299,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!length) {
         return [];
       }
-      depth = depth === undefined ? 1 : toInteger(depth);
+      depth = depth === undefined$1 ? 1 : toInteger(depth);
       return baseFlatten(array, depth);
     }
 
@@ -14207,7 +14349,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => undefined
      */
     function head(array) {
-      return (array && array.length) ? array[0] : undefined;
+      return (array && array.length) ? array[0] : undefined$1;
     }
 
     /**
@@ -14316,7 +14458,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           mapped = arrayMap(arrays, castArrayLikeObject);
 
       if (iteratee === last(mapped)) {
-        iteratee = undefined;
+        iteratee = undefined$1;
       } else {
         mapped.pop();
       }
@@ -14350,12 +14492,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var comparator = last(arrays),
           mapped = arrayMap(arrays, castArrayLikeObject);
 
-      comparator = typeof comparator == 'function' ? comparator : undefined;
+      comparator = typeof comparator == 'function' ? comparator : undefined$1;
       if (comparator) {
         mapped.pop();
       }
       return (mapped.length && mapped[0] === arrays[0])
-        ? baseIntersection(mapped, undefined, comparator)
+        ? baseIntersection(mapped, undefined$1, comparator)
         : [];
     });
 
@@ -14394,7 +14536,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function last(array) {
       var length = array == null ? 0 : array.length;
-      return length ? array[length - 1] : undefined;
+      return length ? array[length - 1] : undefined$1;
     }
 
     /**
@@ -14424,7 +14566,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return -1;
       }
       var index = length;
-      if (fromIndex !== undefined) {
+      if (fromIndex !== undefined$1) {
         index = toInteger(fromIndex);
         index = index < 0 ? nativeMax(length + index, 0) : nativeMin(index, length - 1);
       }
@@ -14455,7 +14597,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'c';
      */
     function nth(array, n) {
-      return (array && array.length) ? baseNth(array, toInteger(n)) : undefined;
+      return (array && array.length) ? baseNth(array, toInteger(n)) : undefined$1;
     }
 
     /**
@@ -14563,7 +14705,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function pullAllWith(array, values, comparator) {
       return (array && array.length && values && values.length)
-        ? basePullAll(array, values, undefined, comparator)
+        ? basePullAll(array, values, undefined$1, comparator)
         : array;
     }
 
@@ -14705,7 +14847,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       else {
         start = start == null ? 0 : toInteger(start);
-        end = end === undefined ? length : toInteger(end);
+        end = end === undefined$1 ? length : toInteger(end);
       }
       return baseSlice(array, start, end);
     }
@@ -14956,7 +15098,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!(array && array.length)) {
         return [];
       }
-      n = (guard || n === undefined) ? 1 : toInteger(n);
+      n = (guard || n === undefined$1) ? 1 : toInteger(n);
       return baseSlice(array, 0, n < 0 ? 0 : n);
     }
 
@@ -14990,7 +15132,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!length) {
         return [];
       }
-      n = (guard || n === undefined) ? 1 : toInteger(n);
+      n = (guard || n === undefined$1) ? 1 : toInteger(n);
       n = length - n;
       return baseSlice(array, n < 0 ? 0 : n, length);
     }
@@ -15123,7 +15265,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     var unionBy = baseRest(function(arrays) {
       var iteratee = last(arrays);
       if (isArrayLikeObject(iteratee)) {
-        iteratee = undefined;
+        iteratee = undefined$1;
       }
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), getIteratee(iteratee, 2));
     });
@@ -15151,8 +15293,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var unionWith = baseRest(function(arrays) {
       var comparator = last(arrays);
-      comparator = typeof comparator == 'function' ? comparator : undefined;
-      return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined, comparator);
+      comparator = typeof comparator == 'function' ? comparator : undefined$1;
+      return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined$1, comparator);
     });
 
     /**
@@ -15225,8 +15367,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
      */
     function uniqWith(array, comparator) {
-      comparator = typeof comparator == 'function' ? comparator : undefined;
-      return (array && array.length) ? baseUniq(array, undefined, comparator) : [];
+      comparator = typeof comparator == 'function' ? comparator : undefined$1;
+      return (array && array.length) ? baseUniq(array, undefined$1, comparator) : [];
     }
 
     /**
@@ -15294,7 +15436,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return result;
       }
       return arrayMap(result, function(group) {
-        return apply(iteratee, undefined, group);
+        return apply(iteratee, undefined$1, group);
       });
     }
 
@@ -15372,7 +15514,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     var xorBy = baseRest(function(arrays) {
       var iteratee = last(arrays);
       if (isArrayLikeObject(iteratee)) {
-        iteratee = undefined;
+        iteratee = undefined$1;
       }
       return baseXor(arrayFilter(arrays, isArrayLikeObject), getIteratee(iteratee, 2));
     });
@@ -15400,8 +15542,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var xorWith = baseRest(function(arrays) {
       var comparator = last(arrays);
-      comparator = typeof comparator == 'function' ? comparator : undefined;
-      return baseXor(arrayFilter(arrays, isArrayLikeObject), undefined, comparator);
+      comparator = typeof comparator == 'function' ? comparator : undefined$1;
+      return baseXor(arrayFilter(arrays, isArrayLikeObject), undefined$1, comparator);
     });
 
     /**
@@ -15483,9 +15625,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var zipWith = baseRest(function(arrays) {
       var length = arrays.length,
-          iteratee = length > 1 ? arrays[length - 1] : undefined;
+          iteratee = length > 1 ? arrays[length - 1] : undefined$1;
 
-      iteratee = typeof iteratee == 'function' ? (arrays.pop(), iteratee) : undefined;
+      iteratee = typeof iteratee == 'function' ? (arrays.pop(), iteratee) : undefined$1;
       return unzipWith(arrays, iteratee);
     });
 
@@ -15611,11 +15753,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       value.__actions__.push({
         'func': thru,
         'args': [interceptor],
-        'thisArg': undefined
+        'thisArg': undefined$1
       });
       return new LodashWrapper(value, this.__chain__).thru(function(array) {
         if (length && !array.length) {
-          array.push(undefined);
+          array.push(undefined$1);
         }
         return array;
       });
@@ -15705,11 +15847,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { 'done': true, 'value': undefined }
      */
     function wrapperNext() {
-      if (this.__values__ === undefined) {
+      if (this.__values__ === undefined$1) {
         this.__values__ = toArray(this.value());
       }
       var done = this.__index__ >= this.__values__.length,
-          value = done ? undefined : this.__values__[this.__index__++];
+          value = done ? undefined$1 : this.__values__[this.__index__++];
 
       return { 'done': done, 'value': value };
     }
@@ -15767,7 +15909,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       while (parent instanceof baseLodash) {
         var clone = wrapperClone(parent);
         clone.__index__ = 0;
-        clone.__values__ = undefined;
+        clone.__values__ = undefined$1;
         if (result) {
           previous.__wrapped__ = clone;
         } else {
@@ -15811,7 +15953,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         wrapped.__actions__.push({
           'func': thru,
           'args': [reverse],
-          'thisArg': undefined
+          'thisArg': undefined$1
         });
         return new LodashWrapper(wrapped, this.__chain__);
       }
@@ -15912,7 +16054,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function every(collection, predicate, guard) {
       var func = isArray(collection) ? arrayEvery : baseEvery;
       if (guard && isIterateeCall(collection, predicate, guard)) {
-        predicate = undefined;
+        predicate = undefined$1;
       }
       return func(collection, getIteratee(predicate, 3));
     }
@@ -16093,7 +16235,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [[1, 1], [2, 2]]
      */
     function flatMapDepth(collection, iteratee, depth) {
-      depth = depth === undefined ? 1 : toInteger(depth);
+      depth = depth === undefined$1 ? 1 : toInteger(depth);
       return baseFlatten(map(collection, iteratee), depth);
     }
 
@@ -16380,7 +16522,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isArray(iteratees)) {
         iteratees = iteratees == null ? [] : [iteratees];
       }
-      orders = guard ? undefined : orders;
+      orders = guard ? undefined$1 : orders;
       if (!isArray(orders)) {
         orders = orders == null ? [] : [orders];
       }
@@ -16579,7 +16721,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [2, 3, 1]
      */
     function sampleSize(collection, n, guard) {
-      if ((guard ? isIterateeCall(collection, n, guard) : n === undefined)) {
+      if ((guard ? isIterateeCall(collection, n, guard) : n === undefined$1)) {
         n = 1;
       } else {
         n = toInteger(n);
@@ -16682,7 +16824,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function some(collection, predicate, guard) {
       var func = isArray(collection) ? arraySome : baseSome;
       if (guard && isIterateeCall(collection, predicate, guard)) {
-        predicate = undefined;
+        predicate = undefined$1;
       }
       return func(collection, getIteratee(predicate, 3));
     }
@@ -16807,9 +16949,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [6, 8, 10]
      */
     function ary(func, n, guard) {
-      n = guard ? undefined : n;
+      n = guard ? undefined$1 : n;
       n = (func && n == null) ? func.length : n;
-      return createWrap(func, WRAP_ARY_FLAG, undefined, undefined, undefined, undefined, n);
+      return createWrap(func, WRAP_ARY_FLAG, undefined$1, undefined$1, undefined$1, undefined$1, n);
     }
 
     /**
@@ -16840,7 +16982,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           result = func.apply(this, arguments);
         }
         if (n <= 1) {
-          func = undefined;
+          func = undefined$1;
         }
         return result;
       };
@@ -16986,8 +17128,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3]
      */
     function curry(func, arity, guard) {
-      arity = guard ? undefined : arity;
-      var result = createWrap(func, WRAP_CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
+      arity = guard ? undefined$1 : arity;
+      var result = createWrap(func, WRAP_CURRY_FLAG, undefined$1, undefined$1, undefined$1, undefined$1, undefined$1, arity);
       result.placeholder = curry.placeholder;
       return result;
     }
@@ -17031,8 +17173,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3]
      */
     function curryRight(func, arity, guard) {
-      arity = guard ? undefined : arity;
-      var result = createWrap(func, WRAP_CURRY_RIGHT_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
+      arity = guard ? undefined$1 : arity;
+      var result = createWrap(func, WRAP_CURRY_RIGHT_FLAG, undefined$1, undefined$1, undefined$1, undefined$1, undefined$1, arity);
       result.placeholder = curryRight.placeholder;
       return result;
     }
@@ -17118,7 +17260,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         var args = lastArgs,
             thisArg = lastThis;
 
-        lastArgs = lastThis = undefined;
+        lastArgs = lastThis = undefined$1;
         lastInvokeTime = time;
         result = func.apply(thisArg, args);
         return result;
@@ -17150,7 +17292,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         // Either this is the first call, activity has stopped and we're at the
         // trailing edge, the system time has gone backwards and we're treating
         // it as the trailing edge, or we've hit the `maxWait` limit.
-        return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+        return (lastCallTime === undefined$1 || (timeSinceLastCall >= wait) ||
           (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
       }
 
@@ -17164,27 +17306,27 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function trailingEdge(time) {
-        timerId = undefined;
+        timerId = undefined$1;
 
         // Only invoke if we have `lastArgs` which means `func` has been
         // debounced at least once.
         if (trailing && lastArgs) {
           return invokeFunc(time);
         }
-        lastArgs = lastThis = undefined;
+        lastArgs = lastThis = undefined$1;
         return result;
       }
 
       function cancel() {
-        if (timerId !== undefined) {
+        if (timerId !== undefined$1) {
           clearTimeout(timerId);
         }
         lastInvokeTime = 0;
-        lastArgs = lastCallTime = lastThis = timerId = undefined;
+        lastArgs = lastCallTime = lastThis = timerId = undefined$1;
       }
 
       function flush() {
-        return timerId === undefined ? result : trailingEdge(now());
+        return timerId === undefined$1 ? result : trailingEdge(now());
       }
 
       function debounced() {
@@ -17196,7 +17338,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         lastCallTime = time;
 
         if (isInvoking) {
-          if (timerId === undefined) {
+          if (timerId === undefined$1) {
             return leadingEdge(lastCallTime);
           }
           if (maxing) {
@@ -17206,7 +17348,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             return invokeFunc(lastCallTime);
           }
         }
-        if (timerId === undefined) {
+        if (timerId === undefined$1) {
           timerId = setTimeout(timerExpired, wait);
         }
         return result;
@@ -17491,7 +17633,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var partial = baseRest(function(func, partials) {
       var holders = replaceHolders(partials, getHolder(partial));
-      return createWrap(func, WRAP_PARTIAL_FLAG, undefined, partials, holders);
+      return createWrap(func, WRAP_PARTIAL_FLAG, undefined$1, partials, holders);
     });
 
     /**
@@ -17528,7 +17670,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var partialRight = baseRest(function(func, partials) {
       var holders = replaceHolders(partials, getHolder(partialRight));
-      return createWrap(func, WRAP_PARTIAL_RIGHT_FLAG, undefined, partials, holders);
+      return createWrap(func, WRAP_PARTIAL_RIGHT_FLAG, undefined$1, partials, holders);
     });
 
     /**
@@ -17554,7 +17696,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => ['a', 'b', 'c']
      */
     var rearg = flatRest(function(func, indexes) {
-      return createWrap(func, WRAP_REARG_FLAG, undefined, undefined, undefined, indexes);
+      return createWrap(func, WRAP_REARG_FLAG, undefined$1, undefined$1, undefined$1, indexes);
     });
 
     /**
@@ -17586,7 +17728,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      start = start === undefined ? start : toInteger(start);
+      start = start === undefined$1 ? start : toInteger(start);
       return baseRest(func, start);
     }
 
@@ -17852,7 +17994,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 0
      */
     function cloneWith(value, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
       return baseClone(value, CLONE_SYMBOLS_FLAG, customizer);
     }
 
@@ -17907,7 +18049,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 20
      */
     function cloneDeepWith(value, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
       return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG, customizer);
     }
 
@@ -18355,9 +18497,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => true
      */
     function isEqualWith(value, other, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
-      var result = customizer ? customizer(value, other) : undefined;
-      return result === undefined ? baseIsEqual(value, other, undefined, customizer) : !!result;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
+      var result = customizer ? customizer(value, other) : undefined$1;
+      return result === undefined$1 ? baseIsEqual(value, other, undefined$1, customizer) : !!result;
     }
 
     /**
@@ -18647,7 +18789,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => true
      */
     function isMatchWith(object, source, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
       return baseIsMatch(object, source, getMatchData(source), customizer);
     }
 
@@ -18986,7 +19128,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => false
      */
     function isUndefined(value) {
-      return value === undefined;
+      return value === undefined$1;
     }
 
     /**
@@ -19578,7 +19720,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
       var index = -1;
       var length = sources.length;
-      var guard = length > 2 ? sources[2] : undefined;
+      var guard = length > 2 ? sources[2] : undefined$1;
 
       if (guard && isIterateeCall(sources[0], sources[1], guard)) {
         length = 1;
@@ -19594,7 +19736,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           var key = props[propsIndex];
           var value = object[key];
 
-          if (value === undefined ||
+          if (value === undefined$1 ||
               (eq(value, objectProto[key]) && !hasOwnProperty.call(object, key))) {
             object[key] = source[key];
           }
@@ -19624,8 +19766,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { 'a': { 'b': 2, 'c': 3 } }
      */
     var defaultsDeep = baseRest(function(args) {
-      args.push(undefined, customDefaultsMerge);
-      return apply(mergeWith, undefined, args);
+      args.push(undefined$1, customDefaultsMerge);
+      return apply(mergeWith, undefined$1, args);
     });
 
     /**
@@ -19914,8 +20056,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'default'
      */
     function get(object, path, defaultValue) {
-      var result = object == null ? undefined : baseGet(object, path);
-      return result === undefined ? defaultValue : result;
+      var result = object == null ? undefined$1 : baseGet(object, path);
+      return result === undefined$1 ? defaultValue : result;
     }
 
     /**
@@ -20419,11 +20561,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       // Ensure the loop is entered when path is empty.
       if (!length) {
         length = 1;
-        object = undefined;
+        object = undefined$1;
       }
       while (++index < length) {
-        var value = object == null ? undefined : object[toKey(path[index])];
-        if (value === undefined) {
+        var value = object == null ? undefined$1 : object[toKey(path[index])];
+        if (value === undefined$1) {
           index = length;
           value = defaultValue;
         }
@@ -20489,7 +20631,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { '0': { '1': 'a' } }
      */
     function setWith(object, path, value, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
       return object == null ? object : baseSet(object, path, value, customizer);
     }
 
@@ -20685,7 +20827,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { '0': { '1': 'a' } }
      */
     function updateWith(object, path, updater, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
+      customizer = typeof customizer == 'function' ? customizer : undefined$1;
       return object == null ? object : baseUpdate(object, path, castFunction(updater), customizer);
     }
 
@@ -20769,15 +20911,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 5
      */
     function clamp(number, lower, upper) {
-      if (upper === undefined) {
+      if (upper === undefined$1) {
         upper = lower;
-        lower = undefined;
+        lower = undefined$1;
       }
-      if (upper !== undefined) {
+      if (upper !== undefined$1) {
         upper = toNumber(upper);
         upper = upper === upper ? upper : 0;
       }
-      if (lower !== undefined) {
+      if (lower !== undefined$1) {
         lower = toNumber(lower);
         lower = lower === lower ? lower : 0;
       }
@@ -20824,7 +20966,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function inRange(number, start, end) {
       start = toFinite(start);
-      if (end === undefined) {
+      if (end === undefined$1) {
         end = start;
         start = 0;
       } else {
@@ -20867,25 +21009,25 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function random(lower, upper, floating) {
       if (floating && typeof floating != 'boolean' && isIterateeCall(lower, upper, floating)) {
-        upper = floating = undefined;
+        upper = floating = undefined$1;
       }
-      if (floating === undefined) {
+      if (floating === undefined$1) {
         if (typeof upper == 'boolean') {
           floating = upper;
-          upper = undefined;
+          upper = undefined$1;
         }
         else if (typeof lower == 'boolean') {
           floating = lower;
-          lower = undefined;
+          lower = undefined$1;
         }
       }
-      if (lower === undefined && upper === undefined) {
+      if (lower === undefined$1 && upper === undefined$1) {
         lower = 0;
         upper = 1;
       }
       else {
         lower = toFinite(lower);
-        if (upper === undefined) {
+        if (upper === undefined$1) {
           upper = lower;
           lower = 0;
         } else {
@@ -21001,7 +21143,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       target = baseToString(target);
 
       var length = string.length;
-      position = position === undefined
+      position = position === undefined$1
         ? length
         : baseClamp(toInteger(position), 0, length);
 
@@ -21296,7 +21438,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => ''
      */
     function repeat(string, n, guard) {
-      if ((guard ? isIterateeCall(string, n, guard) : n === undefined)) {
+      if ((guard ? isIterateeCall(string, n, guard) : n === undefined$1)) {
         n = 1;
       } else {
         n = toInteger(n);
@@ -21376,9 +21518,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function split(string, separator, limit) {
       if (limit && typeof limit != 'number' && isIterateeCall(string, separator, limit)) {
-        separator = limit = undefined;
+        separator = limit = undefined$1;
       }
-      limit = limit === undefined ? MAX_ARRAY_LENGTH : limit >>> 0;
+      limit = limit === undefined$1 ? MAX_ARRAY_LENGTH : limit >>> 0;
       if (!limit) {
         return [];
       }
@@ -21564,7 +21706,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       var settings = lodash.templateSettings;
 
       if (guard && isIterateeCall(string, options, guard)) {
-        options = undefined;
+        options = undefined$1;
       }
       string = toString(string);
       options = assignInWith({}, options, settings, customDefaultsAssignIn);
@@ -21656,7 +21798,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
       var result = attempt(function() {
         return Function(importsKeys, sourceURL + 'return ' + source)
-          .apply(undefined, importsValues);
+          .apply(undefined$1, importsValues);
       });
 
       // Provide the compiled function's source by its `toString` method or
@@ -21742,7 +21884,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function trim(string, chars, guard) {
       string = toString(string);
-      if (string && (guard || chars === undefined)) {
+      if (string && (guard || chars === undefined$1)) {
         return string.replace(reTrim, '');
       }
       if (!string || !(chars = baseToString(chars))) {
@@ -21777,7 +21919,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function trimEnd(string, chars, guard) {
       string = toString(string);
-      if (string && (guard || chars === undefined)) {
+      if (string && (guard || chars === undefined$1)) {
         return string.replace(reTrimEnd, '');
       }
       if (!string || !(chars = baseToString(chars))) {
@@ -21810,7 +21952,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function trimStart(string, chars, guard) {
       string = toString(string);
-      if (string && (guard || chars === undefined)) {
+      if (string && (guard || chars === undefined$1)) {
         return string.replace(reTrimStart, '');
       }
       if (!string || !(chars = baseToString(chars))) {
@@ -21886,7 +22028,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         ? castSlice(strSymbols, 0, end).join('')
         : string.slice(0, end);
 
-      if (separator === undefined) {
+      if (separator === undefined$1) {
         return result + omission;
       }
       if (strSymbols) {
@@ -21904,7 +22046,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           while ((match = separator.exec(substring))) {
             var newEnd = match.index;
           }
-          result = result.slice(0, newEnd === undefined ? end : newEnd);
+          result = result.slice(0, newEnd === undefined$1 ? end : newEnd);
         }
       } else if (string.indexOf(baseToString(separator), end) != end) {
         var index = result.lastIndexOf(separator);
@@ -22005,9 +22147,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function words(string, pattern, guard) {
       string = toString(string);
-      pattern = guard ? undefined : pattern;
+      pattern = guard ? undefined$1 : pattern;
 
-      if (pattern === undefined) {
+      if (pattern === undefined$1) {
         return hasUnicodeWord(string) ? unicodeWords(string) : asciiWords(string);
       }
       return string.match(pattern) || [];
@@ -22039,7 +22181,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     var attempt = baseRest(function(func, args) {
       try {
-        return apply(func, undefined, args);
+        return apply(func, undefined$1, args);
       } catch (e) {
         return isError(e) ? e : new Error(e);
       }
@@ -22722,7 +22864,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function propertyOf(object) {
       return function(path) {
-        return object == null ? undefined : baseGet(object, path);
+        return object == null ? undefined$1 : baseGet(object, path);
       };
     }
 
@@ -23092,7 +23234,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function max(array) {
       return (array && array.length)
         ? baseExtremum(array, identity, baseGt)
-        : undefined;
+        : undefined$1;
     }
 
     /**
@@ -23121,7 +23263,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function maxBy(array, iteratee) {
       return (array && array.length)
         ? baseExtremum(array, getIteratee(iteratee, 2), baseGt)
-        : undefined;
+        : undefined$1;
     }
 
     /**
@@ -23190,7 +23332,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function min(array) {
       return (array && array.length)
         ? baseExtremum(array, identity, baseLt)
-        : undefined;
+        : undefined$1;
     }
 
     /**
@@ -23219,7 +23361,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function minBy(array, iteratee) {
       return (array && array.length)
         ? baseExtremum(array, getIteratee(iteratee, 2), baseLt)
-        : undefined;
+        : undefined$1;
     }
 
     /**
@@ -23681,7 +23823,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     // Add `LazyWrapper` methods for `_.drop` and `_.take` variants.
     arrayEach(['drop', 'take'], function(methodName, index) {
       LazyWrapper.prototype[methodName] = function(n) {
-        n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
+        n = n === undefined$1 ? 1 : nativeMax(toInteger(n), 0);
 
         var result = (this.__filtered__ && !index)
           ? new LazyWrapper(this)
@@ -23774,7 +23916,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       } else if (start) {
         result = result.drop(start);
       }
-      if (end !== undefined) {
+      if (end !== undefined$1) {
         end = toInteger(end);
         result = end < 0 ? result.dropRight(-end) : result.take(end - start);
       }
@@ -23823,7 +23965,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         if (!retUnwrapped && useLazy) {
           value = onlyLazy ? value : new LazyWrapper(this);
           var result = func.apply(value, args);
-          result.__actions__.push({ 'func': thru, 'args': [interceptor], 'thisArg': undefined });
+          result.__actions__.push({ 'func': thru, 'args': [interceptor], 'thisArg': undefined$1 });
           return new LodashWrapper(result, chainAll);
         }
         if (isUnwrapped && onlyLazy) {
@@ -23864,9 +24006,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
     });
 
-    realNames[createHybrid(undefined, WRAP_BIND_KEY_FLAG).name] = [{
+    realNames[createHybrid(undefined$1, WRAP_BIND_KEY_FLAG).name] = [{
       'name': 'wrapper',
-      'func': undefined
+      'func': undefined$1
     }];
 
     // Add methods to `LazyWrapper`.
@@ -23898,313 +24040,726 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   var _ = runInContext();
 
   // Some AMD build optimizers, like r.js, check for condition patterns like:
-  if (true) {
-    // Expose Lodash on the global object to prevent errors when Lodash is
-    // loaded by a script tag in the presence of an AMD loader.
-    // See http://requirejs.org/docs/errors.html#mismatch for more details.
-    // Use `_.noConflict` to remove Lodash from the global object.
-    root._ = _;
-
-    // Define as an anonymous module so, through path mapping, it can be
-    // referenced as the "underscore" module.
-    !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
-      return _;
-    }).call(exports, __webpack_require__, exports, module),
-		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  if (freeModule) {
+    // Export for Node.js.
+    (freeModule.exports = _)._ = _;
+    // Export for CommonJS support.
+    freeExports._ = _;
   }
-  // Check for `exports` after `define` in case a build optimizer adds it.
-  else {}
-}.call(this));
-
-
-/***/ }),
-
-/***/ 703:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-var ReactPropTypesSecret = __webpack_require__(414);
-
-function emptyFunction() {}
-function emptyFunctionWithReset() {}
-emptyFunctionWithReset.resetWarningCache = emptyFunction;
-
-module.exports = function() {
-  function shim(props, propName, componentName, location, propFullName, secret) {
-    if (secret === ReactPropTypesSecret) {
-      // It is still safe when called from React.
-      return;
-    }
-    var err = new Error(
-      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-      'Use PropTypes.checkPropTypes() to call them. ' +
-      'Read more at http://fb.me/use-check-prop-types'
-    );
-    err.name = 'Invariant Violation';
-    throw err;
-  };
-  shim.isRequired = shim;
-  function getShim() {
-    return shim;
-  };
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-  var ReactPropTypes = {
-    array: shim,
-    bool: shim,
-    func: shim,
-    number: shim,
-    object: shim,
-    string: shim,
-    symbol: shim,
-
-    any: shim,
-    arrayOf: getShim,
-    element: shim,
-    elementType: shim,
-    instanceOf: getShim,
-    node: shim,
-    objectOf: getShim,
-    oneOf: getShim,
-    oneOfType: getShim,
-    shape: getShim,
-    exact: getShim,
-
-    checkPropTypes: emptyFunctionWithReset,
-    resetWarningCache: emptyFunction
-  };
-
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-
-
-/***/ }),
-
-/***/ 697:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+  else {
+    // Export to the global object.
+    root._ = _;
+  }
+}.call(commonjsGlobal));
+});
 
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
+ * Gets the last element of `array`.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to query.
+ * @returns {*} Returns the last element of `array`.
+ * @example
+ *
+ * _.last([1, 2, 3]);
+ * // => 3
  */
-
-if (false) { var throwOnDirectAccess, ReactIs; } else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(703)();
+function last(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? array[length - 1] : undefined;
 }
 
+var last_1 = last;
 
-/***/ }),
+var treeBuilder = function treeBuilder(_ref) {
+  var hierarchyField = _ref.hierarchyField,
+      itemId = _ref.itemId,
+      items = _ref.items;
+  return items.reduce(function (acc, current) {
+    var _acc$find, _acc$find$toSeq;
 
-/***/ 414:
-/***/ ((module) => {
+    var hierarchies = current.get(hierarchyField).split(".");
 
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+    if (hierarchies.length > 1) {
+      var parents = hierarchies.slice(0, hierarchies.length - 1);
+      return parents.reduce(function (parentAcc, parent) {
+        var parentIndex = parentAcc.findIndex(function (elem) {
+          return elem.get(itemId) === parent;
+        });
 
+        if (parentIndex >= 0) {
+          return parentAcc.setIn([parentIndex, "children"], parentAcc.getIn([parentIndex, "children"], fromJS([])).push(current));
+        }
 
+        return parentAcc.push(items.find(function (item) {
+          return item.get(itemId) === parent;
+        }));
+      }, acc);
+    }
 
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+    return ((_acc$find = acc.find(function (elem) {
+      return elem.get(itemId) === current.get(itemId);
+    })) === null || _acc$find === void 0 ? void 0 : (_acc$find$toSeq = _acc$find.toSeq()) === null || _acc$find$toSeq === void 0 ? void 0 : _acc$find$toSeq.size) ? acc : acc.push(current);
+  }, fromJS([]));
+};
+var getDescription = function getDescription(_ref2) {
+  var _option$toSeq;
 
-module.exports = ReactPropTypesSecret;
+  var option = _ref2.option,
+      hierarchyField = _ref2.hierarchyField,
+      itemLabel = _ref2.itemLabel;
+  return (option === null || option === void 0 ? void 0 : (_option$toSeq = option.toSeq()) === null || _option$toSeq === void 0 ? void 0 : _option$toSeq.size) ? "[".concat(last_1(option.get(hierarchyField).split(".")), "] ").concat(option.get(itemLabel)) : "";
+};
 
+var _this = undefined,
+    _jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/icons/icons.js";
+var CloseSquare = function CloseSquare(props) {
+  return /*#__PURE__*/React.createElement(SvgIcon, Object.assign({
+    className: "close",
+    fontSize: "inherit",
+    style: {
+      width: 14,
+      height: 14
+    }
+  }, props, {
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 7,
+      columnNumber: 5
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z",
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 14,
+      columnNumber: 7
+    }
+  }));
+};
+var MinusSquare = function MinusSquare(props) {
+  return /*#__PURE__*/React.createElement(SvgIcon, Object.assign({
+    fontSize: "inherit",
+    style: {
+      width: 14,
+      height: 14
+    }
+  }, props, {
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 21,
+      columnNumber: 5
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z",
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 23,
+      columnNumber: 7
+    }
+  }));
+};
+var PlusSquare = function PlusSquare(props) {
+  return /*#__PURE__*/React.createElement(SvgIcon, Object.assign({
+    fontSize: "inherit",
+    style: {
+      width: 14,
+      height: 14
+    }
+  }, props, {
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 30,
+      columnNumber: 5
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z",
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 32,
+      columnNumber: 7
+    }
+  }));
+};
 
-/***/ }),
+/* eslint-disable import/prefer-default-export */
+var NAME$1 = "TreeFieldItem";
 
-/***/ 731:
-/***/ ((module) => {
+var _this$1 = undefined,
+    _jsxFileName$1 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/item-transition/item-transition.jsx";
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__731__;
+var ItemTransition = function ItemTransition(props) {
+  var propIn = props["in"];
+  var style = useSpring({
+    from: {
+      opacity: 0,
+      transform: "translate3d(20px,0,0)"
+    },
+    to: {
+      opacity: propIn ? 1 : 0,
+      transform: "translate3d(".concat(propIn ? 0 : 20, "px,0,0)")
+    }
+  });
+  return /*#__PURE__*/React.createElement(animated.div, {
+    style: style,
+    __self: _this$1,
+    __source: {
+      fileName: _jsxFileName$1,
+      lineNumber: 20,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/React.createElement(Collapse, Object.assign({}, props, {
+    __self: _this$1,
+    __source: {
+      fileName: _jsxFileName$1,
+      lineNumber: 21,
+      columnNumber: 7
+    }
+  })));
+};
 
-/***/ }),
+ItemTransition.displayName = NAME$1;
+ItemTransition.propTypes = {
+  // Show the component; triggers the enter or exit states
+  "in": propTypes.bool
+};
 
-/***/ 893:
-/***/ ((module) => {
+/* eslint-disable import/prefer-default-export */
+var NAME$2 = "TreeDropdownItem";
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__893__;
+/* eslint-disable import/prefer-default-export */
+var theme = function theme(_ref) {
+  var fade = _ref.fade,
+      currentTheme = _ref.currentTheme;
+  return {
+    iconContainer: {
+      "& .close": {
+        opacity: 0.3
+      }
+    },
+    group: {
+      marginLeft: 7,
+      paddingLeft: 18,
+      borderLeft: "1px dashed ".concat(fade(currentTheme.palette.text.primary, 0.4))
+    },
+    treeItem: {
+      textTransform: "none",
+      "&:hover": {
+        textDecoration: "underline",
+        backgroundColor: "transparent"
+      }
+    }
+  };
+};
 
-/***/ }),
+var _this$2 = undefined,
+    _jsxFileName$2 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
 
-/***/ 913:
-/***/ ((module) => {
+var TreeDropdownItem = function TreeDropdownItem(_ref) {
+  var label = _ref.label,
+      onClick = _ref.onClick,
+      rest = _objectWithoutProperties(_ref, ["label", "onClick"]);
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__913__;
+  var currentTheme = useTheme();
+  var classes = makeStyles(theme({
+    fade: fade,
+    currentTheme: currentTheme
+  }))();
+  return /*#__PURE__*/React.createElement(TreeItem, Object.assign({
+    classes: classes,
+    label: /*#__PURE__*/React.createElement(Button, {
+      className: classes.treeItem,
+      onClick: onClick,
+      __self: _this$2,
+      __source: {
+        fileName: _jsxFileName$2,
+        lineNumber: 20,
+        columnNumber: 9
+      }
+    }, label)
+  }, rest, {
+    TransitionComponent: ItemTransition,
+    __self: _this$2,
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 17,
+      columnNumber: 5
+    }
+  }));
+};
 
-/***/ }),
+TreeDropdownItem.displayName = NAME$2;
+TreeDropdownItem.propTypes = {
+  label: propTypes.string.isRequired,
+  onClick: propTypes.func.isRequired
+};
 
-/***/ 524:
-/***/ ((module) => {
+/* eslint-disable import/prefer-default-export */
+var NAME$3 = "TreeDropdown";
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__524__;
+/* eslint-disable import/prefer-default-export */
+var theme$1 = function theme(width) {
+  return {
+    root: {
+      height: 264,
+      flexGrow: 1,
+      minWidth: "200px",
+      maxWidth: width > 200 ? "".concat(width, "px") : "200px"
+    },
+    selectPopOver: {
+      "& ul": {
+        padding: "10px"
+      }
+    }
+  };
+};
 
-/***/ }),
+var _this$3 = undefined,
+    _jsxFileName$3 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
 
-/***/ 604:
-/***/ ((module) => {
+var TreeDropdown = function TreeDropdown(_ref) {
+  var anchorEl = _ref.anchorEl,
+      hierarchyField = _ref.hierarchyField,
+      itemId = _ref.itemId,
+      itemLabel = _ref.itemLabel,
+      onClose = _ref.onClose,
+      onSelected = _ref.onSelected,
+      open = _ref.open,
+      options = _ref.options,
+      selectedOption = _ref.selectedOption,
+      width = _ref.width;
+  var classes = makeStyles(theme$1(width))();
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__604__;
+  var _React$useState = React.useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      expanded = _React$useState2[0],
+      setExpanded = _React$useState2[1];
 
-/***/ }),
+  var _React$useState3 = React.useState(selectedOption === null || selectedOption === void 0 ? void 0 : selectedOption.get(hierarchyField, "").split(".")),
+      _React$useState4 = _slicedToArray(_React$useState3, 2),
+      selected = _React$useState4[0],
+      setSelected = _React$useState4[1];
 
-/***/ 777:
-/***/ ((module) => {
+  var handleToggle = function handleToggle(event, nodeIds) {
+    setExpanded(nodeIds);
+  };
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__777__;
+  var handleSelect = function handleSelect(event, nodeIds) {
+    setSelected(nodeIds);
+  };
 
-/***/ }),
+  var renderItem = function renderItem(item) {
+    var _item$get;
 
-/***/ 582:
-/***/ ((module) => {
+    var id = item.get(itemId);
+    var label = getDescription({
+      option: item,
+      itemLabel: itemLabel,
+      hierarchyField: hierarchyField
+    });
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__582__;
+    if ((_item$get = item.get("children")) === null || _item$get === void 0 ? void 0 : _item$get.size) {
+      return /*#__PURE__*/React.createElement(TreeDropdownItem, {
+        key: id,
+        nodeId: id,
+        label: label,
+        onClick: function onClick(event) {
+          return onSelected(event, id);
+        },
+        __self: _this$3,
+        __source: {
+          fileName: _jsxFileName$3,
+          lineNumber: 60,
+          columnNumber: 9
+        }
+      }, item.get("children", fromJS([])).map(function (child) {
+        return renderItem(child);
+      }));
+    }
 
-/***/ }),
+    return /*#__PURE__*/React.createElement(TreeDropdownItem, {
+      key: id,
+      nodeId: id,
+      label: label,
+      onClick: function onClick(event) {
+        return onSelected(event, id);
+      },
+      __self: _this$3,
+      __source: {
+        fileName: _jsxFileName$3,
+        lineNumber: 72,
+        columnNumber: 7
+      }
+    });
+  };
 
-/***/ 418:
-/***/ ((module) => {
+  var renderOptions = function renderOptions() {
+    return options.map(function (option) {
+      return renderItem(option);
+    });
+  };
 
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__418__;
+  return /*#__PURE__*/React.createElement(Popover, {
+    open: open,
+    anchorEl: anchorEl,
+    onClose: onClose,
+    disableRestoreFocus: true,
+    anchorOrigin: {
+      vertical: "top",
+      horizontal: "left"
+    },
+    transformOrigin: {
+      vertical: "top",
+      horizontal: "left"
+    },
+    className: classes.selectPopOver,
+    __self: _this$3,
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 84,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/React.createElement(TreeView, {
+    className: classes.root,
+    defaultCollapseIcon: /*#__PURE__*/React.createElement(MinusSquare, {
+      __self: _this$3,
+      __source: {
+        fileName: _jsxFileName$3,
+        lineNumber: 101,
+        columnNumber: 30
+      }
+    }),
+    defaultExpandIcon: /*#__PURE__*/React.createElement(PlusSquare, {
+      __self: _this$3,
+      __source: {
+        fileName: _jsxFileName$3,
+        lineNumber: 102,
+        columnNumber: 28
+      }
+    }),
+    defaultEndIcon: /*#__PURE__*/React.createElement(CloseSquare, {
+      __self: _this$3,
+      __source: {
+        fileName: _jsxFileName$3,
+        lineNumber: 103,
+        columnNumber: 25
+      }
+    }),
+    expanded: expanded,
+    selected: selected,
+    onNodeToggle: handleToggle,
+    onNodeSelect: handleSelect,
+    __self: _this$3,
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 99,
+      columnNumber: 7
+    }
+  }, renderOptions()));
+};
 
-/***/ }),
-
-/***/ 763:
-/***/ ((module) => {
-
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__763__;
-
-/***/ }),
-
-/***/ 234:
-/***/ ((module) => {
-
-"use strict";
-module.exports = __WEBPACK_EXTERNAL_MODULE__234__;
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => module['default'] :
-/******/ 				() => module;
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/node module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nmd = (module) => {
-/******/ 			module.paths = [];
-/******/ 			if (!module.children) module.children = [];
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
-/******/ 	// module exports must be returned from runtime so entry inlining is disabled
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(168);
-/******/ })()
-;
+TreeDropdown.displayName = NAME$3;
+TreeDropdown.defaultProps = {
+  hierarchyField: "hierarchy",
+  itemId: "id",
+  itemLabel: "label",
+  open: false,
+  options: fromJS([])
+};
+TreeDropdown.propTypes = {
+  anchorEl: propTypes.object,
+  hierarchyField: propTypes.string,
+  itemId: propTypes.string,
+  itemLabel: propTypes.string,
+  onClose: propTypes.func.isRequired,
+  onSelected: propTypes.func.isRequired,
+  open: propTypes.bool,
+  options: propTypes.object,
+  selectedOption: propTypes.object,
+  width: propTypes.number
+};
+var TreeDropdown$1 = /*#__PURE__*/memo(TreeDropdown, function (prev, next) {
+  return lodash(prev.anchorEl, next.anchorEl) && prev.hierarchyField === next.hierarchyField && prev.itemId === next.itemId && prev.itemLabel === next.itemLabel && prev.options.equals(next.options) && prev.selectedOption === next.selectedOption && prev.open === next.open && lodash(prev.selectedOption, next.selectedOption) && prev.width === next.width;
 });
+
+/* eslint-disable import/prefer-default-export */
+var treeSelectTheme = {
+  clearButton: {
+    padding: "3px 6px"
+  },
+  treeSelect: {
+    minWidth: "177px"
+  }
+};
+
+var _this$4 = undefined,
+    _jsxFileName$4 = "/home/dennis/workspace/mui-tree-select/src/tree-select-input.jsx";
+var TreeSelectInput = /*#__PURE__*/forwardRef(function (props, ref) {
+  var className = props.className,
+      classes = props.classes,
+      hierarchyField = props.hierarchyField,
+      disabled = props.disabled,
+      id = props.id,
+      name = props.name,
+      items = props.items,
+      itemId = props.itemId,
+      itemLabel = props.itemLabel,
+      valueProp = props.value,
+      defaultValue = props.defaultValue,
+      onChange = props.onChange;
+  var inputRef = useRef(null);
+
+  var _React$useState = React.useState(null),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      displayNode = _React$useState2[0],
+      setDisplayNode = _React$useState2[1];
+
+  var handleRef = useForkRef(ref, inputRef);
+  var css = makeStyles(treeSelectTheme)();
+
+  var _useState = useState({}),
+      _useState2 = _slicedToArray(_useState, 2),
+      popOverOptions = _useState2[0],
+      setPopOverOptions = _useState2[1];
+
+  var _useControlled = useControlled({
+    controlled: valueProp,
+    "default": defaultValue,
+    name: INPUT_NAME
+  }),
+      _useControlled2 = _slicedToArray(_useControlled, 2),
+      value = _useControlled2[0],
+      setValueState = _useControlled2[1];
+
+  var open = Boolean(popOverOptions.anchorEl);
+  var selectedOption = items.find(function (item) {
+    return item.get(itemId) === value;
+  });
+  var description = getDescription({
+    option: selectedOption,
+    itemLabel: itemLabel,
+    hierarchyField: hierarchyField
+  });
+  var treeOptions = treeBuilder({
+    hierarchyField: hierarchyField,
+    itemId: itemId,
+    items: items
+  });
+
+  var handlePopoverOpen = function handlePopoverOpen(event) {
+    setPopOverOptions({
+      anchorEl: event.currentTarget,
+      width: event.currentTarget.getBoundingClientRect().width
+    });
+  };
+
+  var handlePopoverClose = function handlePopoverClose() {
+    setPopOverOptions({
+      width: popOverOptions.width
+    });
+  };
+
+  var triggerChange = function triggerChange(event, nextValue) {
+    if (onChange) {
+      event.persist();
+      Object.defineProperty(event, "target", {
+        writable: true,
+        value: {
+          value: nextValue,
+          name: name
+        }
+      });
+      onChange(event);
+    }
+  };
+
+  var handleChange = function handleChange(event) {
+    setValueState(event.target.value);
+
+    if (onChange) {
+      onChange(event);
+    }
+  };
+
+  var onSelected = useCallback(function (event, nodeId) {
+    setValueState(nodeId);
+    triggerChange(event, nodeId);
+    handlePopoverClose();
+  }, [onChange]);
+
+  var onClear = function onClear(event) {
+    setValueState("");
+    triggerChange(event, "");
+  };
+
+  useImperativeHandle(handleRef, function () {
+    return {
+      focus: function focus() {
+        displayNode.focus();
+      },
+      node: inputRef.current,
+      value: value
+    };
+  }, [value]);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    id: id,
+    ref: setDisplayNode,
+    role: "button",
+    "aria-expanded": open ? "true" : undefined,
+    tabIndex: 0,
+    onFocus: handlePopoverOpen,
+    onMouseDown: handlePopoverOpen,
+    className: clsx(classes.root, classes.select, classes.selectMenu, _defineProperty({}, classes.disabled, disabled), className, css.treeSelect),
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 115,
+      columnNumber: 7
+    }
+  }, description ||
+  /*#__PURE__*/
+  // eslint-disable-next-line react/no-danger
+  React.createElement("span", {
+    dangerouslySetInnerHTML: {
+      __html: "&#8203;"
+    },
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 136,
+      columnNumber: 11
+    }
+  })), /*#__PURE__*/React.createElement("input", {
+    value: value,
+    name: name,
+    ref: inputRef,
+    "aria-hidden": true,
+    onChange: handleChange,
+    className: classes.nativeInput,
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 139,
+      columnNumber: 7
+    }
+  }), /*#__PURE__*/React.createElement(IconButton, {
+    "aria-label": "clear",
+    className: css.clearButton,
+    onClick: onClear,
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 147,
+      columnNumber: 7
+    }
+  }, /*#__PURE__*/React.createElement(CloseIcon, {
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 152,
+      columnNumber: 9
+    }
+  })), /*#__PURE__*/React.createElement(TreeDropdown$1, {
+    selectedOption: selectedOption,
+    open: open,
+    anchorEl: popOverOptions.anchorEl,
+    onClose: handlePopoverClose,
+    options: treeOptions,
+    width: popOverOptions.width,
+    onSelected: onSelected,
+    hierarchyField: hierarchyField,
+    itemId: itemId,
+    itemLabel: itemLabel,
+    __self: _this$4,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 154,
+      columnNumber: 7
+    }
+  }));
+});
+TreeSelectInput.displayName = INPUT_NAME;
+TreeSelectInput.defaultProps = {
+  defaultValue: "",
+  disabled: false,
+  hierarchyField: "hierarchy",
+  itemId: "id",
+  itemLabel: "label",
+  items: fromJS([])
+};
+TreeSelectInput.propTypes = {
+  classes: propTypes.object,
+  className: propTypes.string,
+  defaultValue: propTypes.string,
+  disabled: propTypes.bool,
+  hierarchyField: propTypes.string,
+  id: propTypes.string.isRequired,
+  itemId: propTypes.string,
+  itemLabel: propTypes.string,
+  items: propTypes.object,
+  name: propTypes.string.isRequired,
+  onChange: propTypes.func,
+  value: propTypes.string
+};
+
+var _this$5 = undefined,
+    _jsxFileName$5 = "/home/dennis/workspace/mui-tree-select/src/mui-tree-select.jsx";
+var MuiTreeSelect = /*#__PURE__*/forwardRef(function (props, ref) {
+  var inputProps = props.inputProps,
+      inputLabelProps = props.inputLabelProps,
+      label = props.label,
+      id = props.id,
+      value = props.value;
+  var treeSelect = /*#__PURE__*/cloneElement( /*#__PURE__*/React.createElement(Input, {
+    __self: _this$5,
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 13,
+      columnNumber: 35
+    }
+  }), {
+    inputComponent: TreeSelectInput,
+    inputProps: _objectSpread2(_objectSpread2({}, props), inputProps),
+    label: label,
+    ref: ref
+  });
+  var shrink = (inputLabelProps === null || inputLabelProps === void 0 ? void 0 : inputLabelProps.shrink) !== undefined ? inputLabelProps.shrink : Boolean(value);
+  return label ? /*#__PURE__*/React.createElement(FormControl, {
+    __self: _this$5,
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 26,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/React.createElement(InputLabel, {
+    htmlFor: id,
+    shrink: shrink,
+    __self: _this$5,
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 27,
+      columnNumber: 7
+    }
+  }, label), treeSelect) : treeSelect;
+});
+MuiTreeSelect.displayName = NAME;
+MuiTreeSelect.propTypes = {
+  id: propTypes.string,
+  inputLabelProps: propTypes.object,
+  inputProps: propTypes.object,
+  label: propTypes.string,
+  value: propTypes.string
+};
+var muiTreeSelect = withStyles(styles, {
+  name: NAME
+})(MuiTreeSelect);
+
+export default muiTreeSelect;
