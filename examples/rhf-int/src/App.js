@@ -21,21 +21,22 @@ const App = () => {
       {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-            control={control}
-            id="tree"
-            name="tree"
-            label="Tree Field"
-            render={({ onChange, onBlur, value, id, name }) => (
-              <MuiTreeSelect
-                id={id}
-                name={name}
-                label="Tree"
-                value={value}
-                defaultValue=""
-                onChange={onChange}
-                items={items}
-              />
-            )}
+          control={control}
+          id="tree"
+          name="tree"
+          label="Tree Field"
+          defaultValue=""
+          render={({ name, onBlur, onChange, value }) => 
+            <MuiTreeSelect
+              id="tree"
+              name={name}
+              label="Tree"
+              value={value}
+              onChange={onChange}
+              items={items}
+            />
+          )
+        }
         />
         <Controller control={control} as={TextField} id="email" name="email" label="Email" />
         <input type="submit" />
