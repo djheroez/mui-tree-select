@@ -7,17 +7,18 @@ import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
 import ItemTransition from "../item-transition";
 
 import { NAME } from "./constants";
-import { theme } from "./theme";
+import { buttonTheme, treeItemTheme } from "./theme";
 
 const TreeDropdownItem = ({ label, onClick, ...rest }) => {
   const currentTheme = useTheme();
-  const classes = makeStyles(theme({ fade, currentTheme }))();
+  const treeItemClasses = makeStyles(treeItemTheme({ fade, currentTheme }))();
+  const treeButtonClasses = makeStyles(buttonTheme)();
 
   return (
     <TreeItem
-      classes={classes}
+      classes={treeItemClasses}
       label={
-        <Button className={classes.treeItem} onClick={onClick}>
+        <Button className={treeButtonClasses.treeButton} onClick={onClick}>
           {label}
         </Button>
       }

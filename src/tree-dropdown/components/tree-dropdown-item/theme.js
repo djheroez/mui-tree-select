@@ -1,5 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-export const theme = ({ fade, currentTheme }) => ({
+export const treeItemTheme = ({ fade, currentTheme }) => ({
   iconContainer: {
     "& .close": {
       opacity: 0.3
@@ -9,8 +8,11 @@ export const theme = ({ fade, currentTheme }) => ({
     marginLeft: 7,
     paddingLeft: 18,
     borderLeft: `1px dashed ${fade(currentTheme.palette.text.primary, 0.4)}`
-  },
-  treeItem: {
+  }
+});
+
+export const buttonTheme = {
+  treeButton: {
     textTransform: "none",
 
     "&:hover": {
@@ -18,4 +20,4 @@ export const theme = ({ fade, currentTheme }) => ({
       backgroundColor: "transparent"
     }
   }
-});
+};

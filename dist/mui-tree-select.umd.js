@@ -24239,8 +24239,7 @@
   /* eslint-disable import/prefer-default-export */
   var NAME$2 = "TreeDropdownItem";
 
-  /* eslint-disable import/prefer-default-export */
-  var theme = function theme(_ref) {
+  var treeItemTheme = function treeItemTheme(_ref) {
     var fade = _ref.fade,
         currentTheme = _ref.currentTheme;
     return {
@@ -24253,15 +24252,17 @@
         marginLeft: 7,
         paddingLeft: 18,
         borderLeft: "1px dashed ".concat(fade(currentTheme.palette.text.primary, 0.4))
-      },
-      treeItem: {
-        textTransform: "none",
-        "&:hover": {
-          textDecoration: "underline",
-          backgroundColor: "transparent"
-        }
       }
     };
+  };
+  var buttonTheme = {
+    treeButton: {
+      textTransform: "none",
+      "&:hover": {
+        textDecoration: "underline",
+        backgroundColor: "transparent"
+      }
+    }
   };
 
   var _this$2 = undefined,
@@ -24273,19 +24274,20 @@
         rest = _objectWithoutProperties(_ref, ["label", "onClick"]);
 
     var currentTheme = styles.useTheme();
-    var classes = styles.makeStyles(theme({
+    var treeItemClasses = styles.makeStyles(treeItemTheme({
       fade: styles.fade,
       currentTheme: currentTheme
     }))();
+    var treeButtonClasses = styles.makeStyles(buttonTheme)();
     return /*#__PURE__*/React__default['default'].createElement(TreeItem__default['default'], Object.assign({
-      classes: classes,
+      classes: treeItemClasses,
       label: /*#__PURE__*/React__default['default'].createElement(core.Button, {
-        className: classes.treeItem,
+        className: treeButtonClasses.treeButton,
         onClick: onClick,
         __self: _this$2,
         __source: {
           fileName: _jsxFileName$2,
-          lineNumber: 20,
+          lineNumber: 21,
           columnNumber: 9
         }
       }, label)
@@ -24294,7 +24296,7 @@
       __self: _this$2,
       __source: {
         fileName: _jsxFileName$2,
-        lineNumber: 17,
+        lineNumber: 18,
         columnNumber: 5
       }
     }));
@@ -24310,7 +24312,7 @@
   var NAME$3 = "TreeDropdown";
 
   /* eslint-disable import/prefer-default-export */
-  var theme$1 = function theme(width) {
+  var theme = function theme(width) {
     return {
       root: {
         height: 264,
@@ -24342,7 +24344,7 @@
         options = _ref.options,
         selectedOption = _ref.selectedOption,
         width = _ref.width;
-    var classes = styles.makeStyles(theme$1(width))();
+    var classes = styles.makeStyles(theme(width))();
 
     var _useState = React.useState((selectedOption === null || selectedOption === void 0 ? void 0 : (_selectedOption$get = selectedOption.get(hierarchyField)) === null || _selectedOption$get === void 0 ? void 0 : _selectedOption$get.split(".")) || []),
         _useState2 = _slicedToArray(_useState, 2),
