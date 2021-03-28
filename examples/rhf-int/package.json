@@ -11,7 +11,6 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "css-to-mui-loader": "^2.0.2",
-    "immutable": "^4.0.0-rc.12",
     "mui-tree-select": "git+ssh://git@github.com:djheroez/mui-tree-select",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

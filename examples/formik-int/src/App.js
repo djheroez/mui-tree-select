@@ -1,5 +1,4 @@
 import React from "react";
-import { fromJS } from "immutable";
 import { useFormik } from "formik";
 import { TextField } from "@material-ui/core";
 import MuiTreeSelect from "mui-tree-select"
@@ -14,12 +13,12 @@ const App = () => {
     }
   });
 
-  const items = fromJS([
+  const items = [
     { id: "a", label: "A", hierarchy: "a" },
     { id: "a1", label: "A1", hierarchy: "a.a1" },
     { id: "b", label: "B", hierarchy: "b" },
     { id: "b1", label: "B1", hierarchy: "b.b1" }
-  ]);
+  ];
 
   return (
      <form onSubmit={formik.handleSubmit}>

@@ -1,11 +1,10 @@
 /* eslint-disable react/display-name, react/no-multi-comp */
 import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
-import { fromJS } from "immutable";
 import { makeStyles } from "@material-ui/core/styles";
 import TreeView from "@material-ui/lab/TreeView";
 import { Popover } from "@material-ui/core";
-import isEqual from "lodash";
+import isEmpty from "lodash/isEmpty";
 
 import { getDescription } from "../utils";
 
@@ -31,13 +30,10 @@ const TreeDropdown = ({
   width
 }) => {
   const classes = makeStyles(theme(width))();
+  const current = selectedOption && selectedOption[hierarchyField] ? selectedOption[hierarchyField].split(".") : [];
 
-  const [expanded, setExpanded] = useState(
-    selectedOption?.get(hierarchyField)?.split(".") || []
-  );
-  const [selected, setSelected] = useState(
-    selectedOption?.get(hierarchyField)?.split(".") || []
-  );
+  const [expanded, setExpanded] = useState(current);
+  const [selected, setSelected] = useState(current);
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -48,15 +44,15 @@ const TreeDropdown = ({
   };
 
   const renderItem = item => {
-    const id = item.get(itemId);
+    const id = item[itemId];
     const label = getDescription({
       option: item,
       itemLabel,
       hierarchyField
     });
 
-    const renderItems = item.get("children")?.size
-      ? item.get("children", fromJS([])).map(child => renderItem(child))
+    const renderItems = !isEmpty(item.children)
+      ? (item.children || []).map(child => renderItem(child))
       : null;
 
     return (
@@ -112,7 +108,7 @@ TreeDropdown.defaultProps = {
   itemId: "id",
   itemLabel: "label",
   open: false,
-  options: fromJS([])
+  options: []
 };
 
 TreeDropdown.propTypes = {
@@ -123,21 +119,9 @@ TreeDropdown.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSelected: PropTypes.func.isRequired,
   open: PropTypes.bool,
-  options: PropTypes.object,
+  options: PropTypes.array,
   selectedOption: PropTypes.object,
   width: PropTypes.number
 };
 
-export default memo(TreeDropdown, (prev, next) => {
-  return (
-    isEqual(prev.anchorEl, next.anchorEl) &&
-    prev.hierarchyField === next.hierarchyField &&
-    prev.itemId === next.itemId &&
-    prev.itemLabel === next.itemLabel &&
-    prev.options.equals(next.options) &&
-    prev.selectedOption === next.selectedOption &&
-    prev.open === next.open &&
-    isEqual(prev.selectedOption, next.selectedOption) &&
-    prev.width === next.width
-  );
-});
+export default TreeDropdown;

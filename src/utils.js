@@ -1,38 +1,45 @@
-import { fromJS } from "immutable";
 import last from "lodash/last";
+import isEmpty from "lodash/isEmpty";
 
 export const treeBuilder = ({ hierarchyField, itemId, items }) =>
   items.reduce((acc, current) => {
-    const hierarchies = current.get(hierarchyField).split(".");
+    const hierarchies = current[hierarchyField].split(".");
 
     if (hierarchies.length > 1) {
       const parents = hierarchies.slice(0, hierarchies.length - 1);
 
       return parents.reduce((parentAcc, parent) => {
         const parentIndex = parentAcc.findIndex(
-          elem => elem.get(itemId) === parent
+          elem => elem[itemId] === parent
         );
 
         if (parentIndex >= 0) {
-          return parentAcc.setIn(
-            [parentIndex, "children"],
-            parentAcc.getIn([parentIndex, "children"], fromJS([])).push(current)
-          );
+          if (!parentAcc[parentIndex].children) {
+            // eslint-disable-next-line no-param-reassign
+            parentAcc[parentIndex].children = [current];
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            parentAcc[parentIndex].children = [
+              ...parentAcc[parentIndex].children,
+              current
+            ];
+          }
+
+          return parentAcc;
         }
 
-        return parentAcc.push(items.find(item => item.get(itemId) === parent));
+        return [...parentAcc, { ...items.find(item => item[itemId] === parent) }];
       }, acc);
     }
 
-    return acc.find(elem => elem.get(itemId) === current.get(itemId))?.toSeq()
-      ?.size
-      ? acc
-      : acc.push(current);
-  }, fromJS([]));
+    if (!acc.find(elem => elem[itemId] === current[itemId])) {
+      return [...acc, { ...current }];
+    }
+
+    return acc;
+  }, []);
 
 export const getDescription = ({ option, hierarchyField, itemLabel }) =>
-  option?.toSeq()?.size
-    ? `[${last(option.get(hierarchyField).split("."))}] ${option.get(
-        itemLabel
-      )}`
+  !isEmpty(option)
+    ? `[${last(option[hierarchyField].split("."))}] ${option[itemLabel]}`
     : "";

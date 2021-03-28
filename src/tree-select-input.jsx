@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import { fromJS } from "immutable";
 import { IconButton, useControlled, useForkRef } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
@@ -45,7 +44,7 @@ const TreeSelectInput = forwardRef((props, ref) => {
 
   const open = Boolean(popOverOptions.anchorEl);
 
-  const selectedOption = items.find(item => item.get(itemId) === value);
+  const selectedOption = items.find(item => item[itemId] === value);
 
   const description = getDescription({
     option: selectedOption,
@@ -175,7 +174,7 @@ TreeSelectInput.defaultProps = {
   hierarchyField: "hierarchy",
   itemId: "id",
   itemLabel: "label",
-  items: fromJS([])
+  items: []
 };
 
 TreeSelectInput.propTypes = {
@@ -187,7 +186,7 @@ TreeSelectInput.propTypes = {
   id: PropTypes.string.isRequired,
   itemId: PropTypes.string,
   itemLabel: PropTypes.string,
-  items: PropTypes.object,
+  items: PropTypes.array,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   value: PropTypes.string
