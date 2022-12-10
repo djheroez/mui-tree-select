@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "@material-ui/core";
-import TreeItem from "@material-ui/lab/TreeItem";
-import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
+import { Button } from "@mui/material";
+import TreeItem from "@mui/lab/TreeItem";
+import { fade, makeStyles, useTheme } from "@mui/material/styles";
 
 import ItemTransition from "../item-transition";
 

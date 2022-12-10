@@ -7,14 +7,13 @@ import React, {
 } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import { IconButton, useControlled, useForkRef } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
+import { IconButton, useControlled, useForkRef } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import TreeDropdown from "./tree-dropdown";
 import { getDescription, treeBuilder } from "./utils";
 import { INPUT_NAME } from "./constants";
-import { treeSelectTheme } from "./theme";
+import css from "./styles.css";
 
 const TreeSelectInput = forwardRef((props, ref) => {
   const {
@@ -34,7 +33,6 @@ const TreeSelectInput = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const [displayNode, setDisplayNode] = React.useState(null);
   const handleRef = useForkRef(ref, inputRef);
-  const css = makeStyles(treeSelectTheme)();
   const [popOverOptions, setPopOverOptions] = useState({});
   const [value, setValueState] = useControlled({
     controlled: valueProp,

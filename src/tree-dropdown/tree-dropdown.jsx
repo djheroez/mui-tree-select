@@ -1,9 +1,9 @@
 /* eslint-disable react/display-name, react/no-multi-comp */
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import TreeView from "@material-ui/lab/TreeView";
-import { Popover } from "@material-ui/core";
+import { makeStyles } from "@mui/material/styles";
+import TreeView from "@mui/lab/TreeView";
+import { Popover } from "@mui/material";
 import isEmpty from "lodash/isEmpty";
 
 import { getDescription } from "../utils";
@@ -30,7 +30,10 @@ const TreeDropdown = ({
   width
 }) => {
   const classes = makeStyles(theme(width))();
-  const current = selectedOption && selectedOption[hierarchyField] ? selectedOption[hierarchyField].split(".") : [];
+  const current =
+    selectedOption && selectedOption[hierarchyField]
+      ? selectedOption[hierarchyField].split(".")
+      : [];
 
   const [expanded, setExpanded] = useState(current);
   const [selected, setSelected] = useState(current);

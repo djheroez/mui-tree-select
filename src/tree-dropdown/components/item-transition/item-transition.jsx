@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Collapse from "@material-ui/core/Collapse";
+import Collapse from "@mui/material/Collapse";
 // web.cjs is required for IE 11 support
 import { useSpring, animated } from "@react-spring/web";
 

@@ -1,8 +1,6 @@
 import React, { cloneElement, forwardRef } from "react";
 import PropTypes from "prop-types";
-import { styles } from "@material-ui/core/NativeSelect/NativeSelect";
-import { FormControl, Input, InputLabel } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { FormControl, Input, InputLabel } from "@mui/material";
 
 import { NAME } from "./constants";
 import TreeSelectInput from "./tree-select-input";
@@ -44,4 +42,4 @@ MuiTreeSelect.propTypes = {
   value: PropTypes.string
 };
 
-export default withStyles(styles, { name: NAME })(MuiTreeSelect);
+export default MuiTreeSelect;

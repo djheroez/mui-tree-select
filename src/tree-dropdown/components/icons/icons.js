@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp, react/display-name */
 import React from "react";
-import SvgIcon from "@material-ui/core/SvgIcon";
+import SvgIcon from "@mui/material/SvgIcon";
 
 export const CloseSquare = props => {
   return (

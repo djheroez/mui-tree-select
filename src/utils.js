@@ -28,7 +28,10 @@ export const treeBuilder = ({ hierarchyField, itemId, items }) =>
           return parentAcc;
         }
 
-        return [...parentAcc, { ...items.find(item => item[itemId] === parent) }];
+        return [
+          ...parentAcc,
+          { ...items.find(item => item[itemId] === parent) }
+        ];
       }, acc);
     }
 

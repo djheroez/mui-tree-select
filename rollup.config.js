@@ -1,3 +1,4 @@
+import postcss from "rollup-plugin-postcss";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -11,9 +12,9 @@ export default {
     "react",
     "react-dom",
     "@react-spring/web",
-    "@material-ui/core",
-    "@material-ui/icons",
-    "@material-ui/lab"
+    "@mui/material",
+    "@mui/icons-material",
+    "@mui/lab"
   ],
   output: [
     { name: "MuiTreeSelect", file: pkg.main, format: "cjs" },
@@ -21,6 +22,9 @@ export default {
     { name: "MuiTreeSelect", file: pkg.browser, format: "umd" }
   ],
   plugins: [
+    postcss({
+      modules: true
+    }),
     peerDepsExternal(),
     resolve({ extensions: [".jsx", ".js"] }),
     babel({

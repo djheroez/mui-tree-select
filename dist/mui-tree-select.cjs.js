@@ -1,15 +1,14 @@
 'use strict';
 
 var React = require('react');
-var NativeSelect = require('@material-ui/core/NativeSelect/NativeSelect');
-var core = require('@material-ui/core');
-var styles = require('@material-ui/core/styles');
-var CloseIcon = require('@material-ui/icons/Close');
-var TreeView = require('@material-ui/lab/TreeView');
-var SvgIcon = require('@material-ui/core/SvgIcon');
-var Collapse = require('@material-ui/core/Collapse');
+var material = require('@mui/material');
+var CloseIcon = require('@mui/icons-material/Close');
+var styles = require('@mui/material/styles');
+var TreeView = require('@mui/lab/TreeView');
+var SvgIcon = require('@mui/material/SvgIcon');
+var Collapse = require('@mui/material/Collapse');
 var web = require('@react-spring/web');
-var TreeItem = require('@material-ui/lab/TreeItem');
+var TreeItem = require('@mui/lab/TreeItem');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -521,12 +520,14 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 var ReactPropTypesSecret_1 = ReactPropTypesSecret;
 
+var has = Function.call.bind(Object.prototype.hasOwnProperty);
+
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
   var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
   var loggedTypeFailures = {};
-  var has = Function.call.bind(Object.prototype.hasOwnProperty);
+  var has$1 = has;
 
   printWarning = function(text) {
     var message = 'Warning: ' + text;
@@ -538,7 +539,7 @@ if (process.env.NODE_ENV !== 'production') {
       // This error was thrown as a convenience so that you can use this stack
       // to find the callsite that caused this warning to fire.
       throw new Error(message);
-    } catch (x) {}
+    } catch (x) { /**/ }
   };
 }
 
@@ -556,7 +557,7 @@ if (process.env.NODE_ENV !== 'production') {
 function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
   if (process.env.NODE_ENV !== 'production') {
     for (var typeSpecName in typeSpecs) {
-      if (has(typeSpecs, typeSpecName)) {
+      if (has$1(typeSpecs, typeSpecName)) {
         var error;
         // Prop type validation may throw. In case they do, we don't want to
         // fail the render phase where it didn't fail before. So we log it.
@@ -567,7 +568,8 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
           if (typeof typeSpecs[typeSpecName] !== 'function') {
             var err = Error(
               (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' +
+              'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.'
             );
             err.name = 'Invariant Violation';
             throw err;
@@ -615,7 +617,6 @@ checkPropTypes.resetWarningCache = function() {
 
 var checkPropTypes_1 = checkPropTypes;
 
-var has$1 = Function.call.bind(Object.prototype.hasOwnProperty);
 var printWarning$1 = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
@@ -716,6 +717,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
   // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
   var ReactPropTypes = {
     array: createPrimitiveTypeChecker('array'),
+    bigint: createPrimitiveTypeChecker('bigint'),
     bool: createPrimitiveTypeChecker('boolean'),
     func: createPrimitiveTypeChecker('function'),
     number: createPrimitiveTypeChecker('number'),
@@ -761,8 +763,9 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
    * is prohibitively expensive if they are created too often, such as what
    * happens in oneOfType() for any type before the one that matched.
    */
-  function PropTypeError(message) {
+  function PropTypeError(message, data) {
     this.message = message;
+    this.data = data && typeof data === 'object' ? data: {};
     this.stack = '';
   }
   // Make `instanceof Error` still work for returned errors.
@@ -797,7 +800,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
           ) {
             printWarning$1(
               'You are manually calling a React.PropTypes validation ' +
-              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' +
               'and will throw in the standalone `prop-types` package. ' +
               'You may be seeing this warning due to a third-party PropTypes ' +
               'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
@@ -836,7 +839,10 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
         // 'of type `object`'.
         var preciseType = getPreciseType(propValue);
 
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+        return new PropTypeError(
+          'Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'),
+          {expectedType: expectedType}
+        );
       }
       return null;
     }
@@ -950,7 +956,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
       }
       for (var key in propValue) {
-        if (has$1(propValue, key)) {
+        if (has(propValue, key)) {
           var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
           if (error instanceof Error) {
             return error;
@@ -980,14 +986,19 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
     }
 
     function validate(props, propName, componentName, location, propFullName) {
+      var expectedTypes = [];
       for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
         var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
+        var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1);
+        if (checkerResult == null) {
           return null;
         }
+        if (checkerResult.data && has(checkerResult.data, 'expectedType')) {
+          expectedTypes.push(checkerResult.data.expectedType);
+        }
       }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+      var expectedTypesMessage = (expectedTypes.length > 0) ? ', expected one of type [' + expectedTypes.join(', ') + ']': '';
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
     }
     return createChainableTypeChecker(validate);
   }
@@ -1002,6 +1013,13 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
     return createChainableTypeChecker(validate);
   }
 
+  function invalidValidatorError(componentName, location, propFullName, key, type) {
+    return new PropTypeError(
+      (componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' +
+      'it must be a function, usually from the `prop-types` package, but received `' + type + '`.'
+    );
+  }
+
   function createShapeTypeChecker(shapeTypes) {
     function validate(props, propName, componentName, location, propFullName) {
       var propValue = props[propName];
@@ -1011,8 +1029,8 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       }
       for (var key in shapeTypes) {
         var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
+        if (typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
         }
         var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
         if (error) {
@@ -1031,16 +1049,18 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       if (propType !== 'object') {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
       }
-      // We need to check all keys in case some are required but missing from
-      // props.
+      // We need to check all keys in case some are required but missing from props.
       var allKeys = objectAssign({}, props[propName], shapeTypes);
       for (var key in allKeys) {
         var checker = shapeTypes[key];
+        if (has(shapeTypes, key) && typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
         if (!checker) {
           return new PropTypeError(
             'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
             '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+            '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  ')
           );
         }
         var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
@@ -1216,6 +1236,7 @@ var factoryWithThrowingShims = function() {
   // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
   var ReactPropTypes = {
     array: shim,
+    bigint: shim,
     bool: shim,
     func: shim,
     number: shim,
@@ -1269,46 +1290,7 @@ if (process.env.NODE_ENV !== 'production') {
 var NAME = "MuiTreeSelect";
 var INPUT_NAME = "TreeSelectInput";
 
-function toVal(mix) {
-	var k, y, str='';
-
-	if (typeof mix === 'string' || typeof mix === 'number') {
-		str += mix;
-	} else if (typeof mix === 'object') {
-		if (Array.isArray(mix)) {
-			for (k=0; k < mix.length; k++) {
-				if (mix[k]) {
-					if (y = toVal(mix[k])) {
-						str && (str += ' ');
-						str += y;
-					}
-				}
-			}
-		} else {
-			for (k in mix) {
-				if (mix[k]) {
-					str && (str += ' ');
-					str += k;
-				}
-			}
-		}
-	}
-
-	return str;
-}
-
-function clsx () {
-	var i=0, tmp, x, str='';
-	while (i < arguments.length) {
-		if (tmp = arguments[i++]) {
-			if (x = toVal(tmp)) {
-				str && (str += ' ');
-				str += x;
-			}
-		}
-	}
-	return str;
-}
+function r$1(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e))for(t=0;t<e.length;t++)e[t]&&(f=r$1(e[t]))&&(n&&(n+=" "),n+=f);else for(t in e)e[t]&&(n&&(n+=" "),n+=t);return n}function clsx(){for(var e,t,f=0,n="";f<arguments.length;)(e=arguments[f++])&&(t=r$1(e))&&(n&&(n+=" "),n+=t);return n}
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -2252,7 +2234,7 @@ var getDescription = function getDescription(_ref2) {
 };
 
 var _this = undefined,
-    _jsxFileName = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/icons/icons.js";
+    _jsxFileName = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/components/icons/icons.js";
 var CloseSquare = function CloseSquare(props) {
   return /*#__PURE__*/React__default['default'].createElement(SvgIcon__default['default'], Object.assign({
     className: "close",
@@ -2331,7 +2313,7 @@ var PlusSquare = function PlusSquare(props) {
 var NAME$1 = "TreeFieldItem";
 
 var _this$1 = undefined,
-    _jsxFileName$1 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/item-transition/item-transition.jsx";
+    _jsxFileName$1 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/components/item-transition/item-transition.jsx";
 
 var ItemTransition = function ItemTransition(props) {
   var propIn = props["in"];
@@ -2399,7 +2381,7 @@ var buttonTheme = {
 };
 
 var _this$2 = undefined,
-    _jsxFileName$2 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
+    _jsxFileName$2 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
 
 var TreeDropdownItem = function TreeDropdownItem(_ref) {
   var label = _ref.label,
@@ -2414,7 +2396,7 @@ var TreeDropdownItem = function TreeDropdownItem(_ref) {
   var treeButtonClasses = styles.makeStyles(buttonTheme)();
   return /*#__PURE__*/React__default['default'].createElement(TreeItem__default['default'], Object.assign({
     classes: treeItemClasses,
-    label: /*#__PURE__*/React__default['default'].createElement(core.Button, {
+    label: /*#__PURE__*/React__default['default'].createElement(material.Button, {
       className: treeButtonClasses.treeButton,
       onClick: onClick,
       __self: _this$2,
@@ -2462,7 +2444,7 @@ var theme = function theme(width) {
 };
 
 var _this$3 = undefined,
-    _jsxFileName$3 = "/home/dennis/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
+    _jsxFileName$3 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
 
 var TreeDropdown = function TreeDropdown(_ref) {
   var anchorEl = _ref.anchorEl,
@@ -2516,7 +2498,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 59,
+        lineNumber: 62,
         columnNumber: 7
       }
     }, renderItems);
@@ -2528,7 +2510,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
     });
   };
 
-  return /*#__PURE__*/React__default['default'].createElement(core.Popover, {
+  return /*#__PURE__*/React__default['default'].createElement(material.Popover, {
     open: open,
     anchorEl: anchorEl,
     onClose: onClose,
@@ -2545,7 +2527,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
     __self: _this$3,
     __source: {
       fileName: _jsxFileName$3,
-      lineNumber: 73,
+      lineNumber: 76,
       columnNumber: 5
     }
   }, /*#__PURE__*/React__default['default'].createElement(TreeView__default['default'], {
@@ -2554,7 +2536,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 90,
+        lineNumber: 93,
         columnNumber: 30
       }
     }),
@@ -2562,7 +2544,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 91,
+        lineNumber: 94,
         columnNumber: 28
       }
     }),
@@ -2570,7 +2552,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 92,
+        lineNumber: 95,
         columnNumber: 25
       }
     }),
@@ -2581,7 +2563,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
     __self: _this$3,
     __source: {
       fileName: _jsxFileName$3,
-      lineNumber: 88,
+      lineNumber: 91,
       columnNumber: 7
     }
   }, renderOptions()));
@@ -2608,18 +2590,39 @@ TreeDropdown.propTypes = {
   width: propTypes.number
 };
 
-/* eslint-disable import/prefer-default-export */
-var treeSelectTheme = {
-  clearButton: {
-    padding: "3px 6px"
-  },
-  treeSelect: {
-    minWidth: "177px"
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
   }
-};
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = "clearButton {\n  padding: 3px 6px;\n}\n\ntreeSelect {\n  min-width: 177px;\n}\n";
+var css = {};
+styleInject(css_248z);
 
 var _this$4 = undefined,
-    _jsxFileName$4 = "/home/dennis/workspace/mui-tree-select/src/tree-select-input.jsx";
+    _jsxFileName$4 = "/home/djheroez/workspace/mui-tree-select/src/tree-select-input.jsx";
 var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
   var className = props.className,
       classes = props.classes,
@@ -2640,15 +2643,14 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
       displayNode = _React$useState2[0],
       setDisplayNode = _React$useState2[1];
 
-  var handleRef = core.useForkRef(ref, inputRef);
-  var css = styles.makeStyles(treeSelectTheme)();
+  var handleRef = material.useForkRef(ref, inputRef);
 
   var _useState = React.useState({}),
       _useState2 = _slicedToArray(_useState, 2),
       popOverOptions = _useState2[0],
       setPopOverOptions = _useState2[1];
 
-  var _useControlled = core.useControlled({
+  var _useControlled = material.useControlled({
     controlled: valueProp,
     "default": defaultValue,
     name: INPUT_NAME
@@ -2739,7 +2741,7 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 114,
+      lineNumber: 112,
       columnNumber: 7
     }
   }, description ||
@@ -2752,7 +2754,7 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 135,
+      lineNumber: 133,
       columnNumber: 11
     }
   })), /*#__PURE__*/React__default['default'].createElement("input", {
@@ -2765,24 +2767,24 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 138,
+      lineNumber: 136,
       columnNumber: 7
     }
-  }), /*#__PURE__*/React__default['default'].createElement(core.IconButton, {
+  }), /*#__PURE__*/React__default['default'].createElement(material.IconButton, {
     "aria-label": "clear",
     className: css.clearButton,
     onClick: onClear,
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 146,
+      lineNumber: 144,
       columnNumber: 7
     }
   }, /*#__PURE__*/React__default['default'].createElement(CloseIcon__default['default'], {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 151,
+      lineNumber: 149,
       columnNumber: 9
     }
   })), /*#__PURE__*/React__default['default'].createElement(TreeDropdown, {
@@ -2799,7 +2801,7 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 153,
+      lineNumber: 151,
       columnNumber: 7
     }
   }));
@@ -2829,18 +2831,18 @@ TreeSelectInput.propTypes = {
 };
 
 var _this$5 = undefined,
-    _jsxFileName$5 = "/home/dennis/workspace/mui-tree-select/src/mui-tree-select.jsx";
+    _jsxFileName$5 = "/home/djheroez/workspace/mui-tree-select/src/mui-tree-select.jsx";
 var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (props, ref) {
   var inputProps = props.inputProps,
       inputLabelProps = props.inputLabelProps,
       label = props.label,
       id = props.id,
       value = props.value;
-  var treeSelect = /*#__PURE__*/React.cloneElement( /*#__PURE__*/React__default['default'].createElement(core.Input, {
+  var treeSelect = /*#__PURE__*/React.cloneElement( /*#__PURE__*/React__default['default'].createElement(material.Input, {
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 13,
+      lineNumber: 11,
       columnNumber: 35
     }
   }), {
@@ -2850,20 +2852,20 @@ var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (props, ref) {
     ref: ref
   });
   var shrink = (inputLabelProps === null || inputLabelProps === void 0 ? void 0 : inputLabelProps.shrink) !== undefined ? inputLabelProps.shrink : Boolean(value);
-  return label ? /*#__PURE__*/React__default['default'].createElement(core.FormControl, {
+  return label ? /*#__PURE__*/React__default['default'].createElement(material.FormControl, {
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 26,
+      lineNumber: 24,
       columnNumber: 5
     }
-  }, /*#__PURE__*/React__default['default'].createElement(core.InputLabel, {
+  }, /*#__PURE__*/React__default['default'].createElement(material.InputLabel, {
     htmlFor: id,
     shrink: shrink,
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 27,
+      lineNumber: 25,
       columnNumber: 7
     }
   }, label), treeSelect) : treeSelect;
@@ -2876,8 +2878,5 @@ MuiTreeSelect.propTypes = {
   label: propTypes.string,
   value: propTypes.string
 };
-var muiTreeSelect = styles.withStyles(NativeSelect.styles, {
-  name: NAME
-})(MuiTreeSelect);
 
-module.exports = muiTreeSelect;
+module.exports = MuiTreeSelect;
