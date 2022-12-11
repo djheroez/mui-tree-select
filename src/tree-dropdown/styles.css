@@ -1,0 +1,11 @@
+.root {
+  height: 264;
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.selectPopOver {
+  & ul {
+    padding: 10px;
+  }
+}

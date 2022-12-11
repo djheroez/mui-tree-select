@@ -8,6 +8,10 @@ import React, {
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { IconButton, useControlled, useForkRef } from "@mui/material";
+import { nativeSelectSelectStyles } from "@mui/material/NativeSelect/NativeSelectInput";
+import selectClasses from "@mui/material/Select/selectClasses";
+import { styled } from "@mui/material/styles";
+import { slotShouldForwardProp } from "@mui/material/styles/styled";
 import CloseIcon from "@mui/icons-material/Close";
 
 import TreeDropdown from "./tree-dropdown";
@@ -15,11 +19,51 @@ import { getDescription, treeBuilder } from "./utils";
 import { INPUT_NAME } from "./constants";
 import css from "./styles.css";
 
+const SelectSelect = styled("div", {
+  name: "MuiSelect",
+  slot: "Select",
+  overridesResolver: (props, styles) => {
+    const { ownerState } = props;
+
+    return [
+      // Win specificity over the input base
+      { [`&.${selectClasses.select}`]: styles.select },
+      { [`&.${selectClasses.select}`]: styles[ownerState.variant] },
+      { [`&.${selectClasses.multiple}`]: styles.multiple }
+    ];
+  }
+})(nativeSelectSelectStyles, {
+  // Win specificity over the input base
+  [`&.${selectClasses.select}`]: {
+    height: "auto", // Resets for multiple select with chips
+    minHeight: "1.4375em", // Required for select\text-field height consistency
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden"
+  }
+});
+
+const SelectNativeInput = styled("input", {
+  shouldForwardProp: prop => slotShouldForwardProp(prop) && prop !== "classes",
+  name: "MuiSelect",
+  slot: "NativeInput",
+  overridesResolver: (props, styles) => styles.nativeInput
+})({
+  bottom: 0,
+  left: 0,
+  position: "absolute",
+  opacity: 0,
+  pointerEvents: "none",
+  width: "100%",
+  boxSizing: "border-box"
+});
+
 const TreeSelectInput = forwardRef((props, ref) => {
   const {
     className,
     classes,
     hierarchyField,
+    variant,
     disabled,
     id,
     name,
@@ -31,6 +75,7 @@ const TreeSelectInput = forwardRef((props, ref) => {
     onChange
   } = props;
   const inputRef = useRef(null);
+  const displayRef = React.useRef(null);
   const [displayNode, setDisplayNode] = React.useState(null);
   const handleRef = useForkRef(ref, inputRef);
   const [popOverOptions, setPopOverOptions] = useState({});
@@ -94,6 +139,20 @@ const TreeSelectInput = forwardRef((props, ref) => {
     setValueState("");
     triggerChange(event, "");
   };
+  const ownerState = {
+    ...props,
+    variant,
+    value,
+    open
+  };
+
+  const handleDisplayRef = useCallback(node => {
+    displayRef.current = node;
+
+    if (node) {
+      setDisplayNode(node);
+    }
+  }, []);
 
   useImperativeHandle(
     handleRef,
@@ -109,37 +168,28 @@ const TreeSelectInput = forwardRef((props, ref) => {
 
   return (
     <>
-      <div
-        id={id}
-        ref={setDisplayNode}
+      <SelectSelect
         role="button"
-        aria-expanded={open ? "true" : undefined}
-        tabIndex={0}
+        ref={handleDisplayRef}
         onFocus={handlePopoverOpen}
         onMouseDown={handlePopoverOpen}
-        className={clsx(
-          classes.root,
-          classes.select,
-          classes.selectMenu,
-          {
-            [classes.disabled]: disabled
-          },
-          className,
-          css.treeSelect
-        )}
+        className={clsx(className, css.treeSelect)}
+        ownerState={ownerState}
       >
         {description || (
-          // eslint-disable-next-line react/no-danger
-          <span dangerouslySetInnerHTML={{ __html: "&#8203;" }} />
+          <span
+            className="notranslate"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: "&#8203;" }}
+          />
         )}
-      </div>
-      <input
+      </SelectSelect>
+      <SelectNativeInput
         value={value}
         name={name}
         ref={inputRef}
         aria-hidden
         onChange={handleChange}
-        className={classes.nativeInput}
       />
       <IconButton
         aria-label="clear"

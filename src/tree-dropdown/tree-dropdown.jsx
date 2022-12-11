@@ -1,7 +1,6 @@
 /* eslint-disable react/display-name, react/no-multi-comp */
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@mui/material/styles";
 import TreeView from "@mui/lab/TreeView";
 import { Popover } from "@mui/material";
 import isEmpty from "lodash/isEmpty";
@@ -15,7 +14,7 @@ import {
   TreeDropdownItem
 } from "./components";
 import { NAME } from "./constants";
-import { theme } from "./theme";
+import css from "./styles.css";
 
 const TreeDropdown = ({
   anchorEl,
@@ -29,7 +28,6 @@ const TreeDropdown = ({
   selectedOption,
   width
 }) => {
-  const classes = makeStyles(theme(width))();
   const current =
     selectedOption && selectedOption[hierarchyField]
       ? selectedOption[hierarchyField].split(".")
@@ -86,10 +84,10 @@ const TreeDropdown = ({
         vertical: "top",
         horizontal: "left"
       }}
-      className={classes.selectPopOver}
+      className={css.selectPopOver}
     >
       <TreeView
-        className={classes.root}
+        className={css.root}
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}

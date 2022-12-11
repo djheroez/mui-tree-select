@@ -1,7 +1,7 @@
-clearButton {
+.clearButton {
   padding: 3px 6px;
 }
 
-treeSelect {
+.treeSelect {
   min-width: 177px;
 }

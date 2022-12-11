@@ -2,8 +2,11 @@
 
 var React = require('react');
 var material = require('@mui/material');
-var CloseIcon = require('@mui/icons-material/Close');
+var NativeSelectInput = require('@mui/material/NativeSelect/NativeSelectInput');
+var selectClasses = require('@mui/material/Select/selectClasses');
 var styles = require('@mui/material/styles');
+var styled = require('@mui/material/styles/styled');
+var CloseIcon = require('@mui/icons-material/Close');
 var TreeView = require('@mui/lab/TreeView');
 var SvgIcon = require('@mui/material/SvgIcon');
 var Collapse = require('@mui/material/Collapse');
@@ -13,6 +16,7 @@ var TreeItem = require('@mui/lab/TreeItem');
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+var selectClasses__default = /*#__PURE__*/_interopDefaultLegacy(selectClasses);
 var CloseIcon__default = /*#__PURE__*/_interopDefaultLegacy(CloseIcon);
 var TreeView__default = /*#__PURE__*/_interopDefaultLegacy(TreeView);
 var SvgIcon__default = /*#__PURE__*/_interopDefaultLegacy(SvgIcon);
@@ -2354,9 +2358,41 @@ ItemTransition.propTypes = {
 /* eslint-disable import/prefer-default-export */
 var NAME$2 = "TreeDropdownItem";
 
-var treeItemTheme = function treeItemTheme(_ref) {
-  var fade = _ref.fade,
-      currentTheme = _ref.currentTheme;
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = ".styles_treeButton__hEcJF {\n  text-transform: none\n}\n.styles_treeButton__hEcJF:hover {\n    text-decoration: underline;\n    background-color: transparent;\n  }\n";
+var css = {"treeButton":"styles_treeButton__hEcJF"};
+styleInject(css_248z);
+
+var _this$2 = undefined,
+    _jsxFileName$2 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
+var StyledTreeItem = styles.styled(TreeItem__default['default'])(function (_ref) {
+  var theme = _ref.theme;
   return {
     iconContainer: {
       "& .close": {
@@ -2366,43 +2402,25 @@ var treeItemTheme = function treeItemTheme(_ref) {
     group: {
       marginLeft: 7,
       paddingLeft: 18,
-      borderLeft: "1px dashed ".concat(fade(currentTheme.palette.text.primary, 0.4))
+      borderLeft: "1px dashed ".concat(styles.alpha(theme.palette.text.primary, 0.4))
     }
   };
-};
-var buttonTheme = {
-  treeButton: {
-    textTransform: "none",
-    "&:hover": {
-      textDecoration: "underline",
-      backgroundColor: "transparent"
-    }
-  }
-};
+});
 
-var _this$2 = undefined,
-    _jsxFileName$2 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/components/tree-dropdown-item/tree-dropdown-item.jsx";
+var TreeDropdownItem = function TreeDropdownItem(_ref2) {
+  var label = _ref2.label,
+      onClick = _ref2.onClick,
+      rest = _objectWithoutProperties(_ref2, ["label", "onClick"]);
 
-var TreeDropdownItem = function TreeDropdownItem(_ref) {
-  var label = _ref.label,
-      onClick = _ref.onClick,
-      rest = _objectWithoutProperties(_ref, ["label", "onClick"]);
-
-  var currentTheme = styles.useTheme();
-  var treeItemClasses = styles.makeStyles(treeItemTheme({
-    fade: styles.fade,
-    currentTheme: currentTheme
-  }))();
-  var treeButtonClasses = styles.makeStyles(buttonTheme)();
-  return /*#__PURE__*/React__default['default'].createElement(TreeItem__default['default'], Object.assign({
-    classes: treeItemClasses,
+  return /*#__PURE__*/React__default['default'].createElement(StyledTreeItem // classes={treeItemClasses}
+  , Object.assign({
     label: /*#__PURE__*/React__default['default'].createElement(material.Button, {
-      className: treeButtonClasses.treeButton,
+      className: css.treeButton,
       onClick: onClick,
       __self: _this$2,
       __source: {
         fileName: _jsxFileName$2,
-        lineNumber: 21,
+        lineNumber: 29,
         columnNumber: 9
       }
     }, label)
@@ -2411,7 +2429,7 @@ var TreeDropdownItem = function TreeDropdownItem(_ref) {
     __self: _this$2,
     __source: {
       fileName: _jsxFileName$2,
-      lineNumber: 18,
+      lineNumber: 26,
       columnNumber: 5
     }
   }));
@@ -2426,22 +2444,9 @@ TreeDropdownItem.propTypes = {
 /* eslint-disable import/prefer-default-export */
 var NAME$3 = "TreeDropdown";
 
-/* eslint-disable import/prefer-default-export */
-var theme = function theme(width) {
-  return {
-    root: {
-      height: 264,
-      flexGrow: 1,
-      minWidth: "200px",
-      maxWidth: width > 200 ? "".concat(width, "px") : "200px"
-    },
-    selectPopOver: {
-      "& ul": {
-        padding: "10px"
-      }
-    }
-  };
-};
+var css_248z$1 = ".styles_root__ZnGIO {\n  height: 264;\n  flex-grow: 1;\n  min-width: 200px;\n}\n\n.styles_selectPopOver__eWjwC ul {\n    padding: 10px;\n  }\n";
+var css$1 = {"root":"styles_root__ZnGIO","selectPopOver":"styles_selectPopOver__eWjwC"};
+styleInject(css_248z$1);
 
 var _this$3 = undefined,
     _jsxFileName$3 = "/home/djheroez/workspace/mui-tree-select/src/tree-dropdown/tree-dropdown.jsx";
@@ -2457,7 +2462,6 @@ var TreeDropdown = function TreeDropdown(_ref) {
       options = _ref.options,
       selectedOption = _ref.selectedOption,
       width = _ref.width;
-  var classes = styles.makeStyles(theme(width))();
   var current = selectedOption && selectedOption[hierarchyField] ? selectedOption[hierarchyField].split(".") : [];
 
   var _useState = React.useState(current),
@@ -2498,7 +2502,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 62,
+        lineNumber: 60,
         columnNumber: 7
       }
     }, renderItems);
@@ -2523,20 +2527,20 @@ var TreeDropdown = function TreeDropdown(_ref) {
       vertical: "top",
       horizontal: "left"
     },
-    className: classes.selectPopOver,
+    className: css$1.selectPopOver,
     __self: _this$3,
     __source: {
       fileName: _jsxFileName$3,
-      lineNumber: 76,
+      lineNumber: 74,
       columnNumber: 5
     }
   }, /*#__PURE__*/React__default['default'].createElement(TreeView__default['default'], {
-    className: classes.root,
+    className: css$1.root,
     defaultCollapseIcon: /*#__PURE__*/React__default['default'].createElement(MinusSquare, {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 93,
+        lineNumber: 91,
         columnNumber: 30
       }
     }),
@@ -2544,7 +2548,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 94,
+        lineNumber: 92,
         columnNumber: 28
       }
     }),
@@ -2552,7 +2556,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
       __self: _this$3,
       __source: {
         fileName: _jsxFileName$3,
-        lineNumber: 95,
+        lineNumber: 93,
         columnNumber: 25
       }
     }),
@@ -2563,7 +2567,7 @@ var TreeDropdown = function TreeDropdown(_ref) {
     __self: _this$3,
     __source: {
       fileName: _jsxFileName$3,
-      lineNumber: 91,
+      lineNumber: 89,
       columnNumber: 7
     }
   }, renderOptions()));
@@ -2590,43 +2594,52 @@ TreeDropdown.propTypes = {
   width: propTypes.number
 };
 
-function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css_248z = "clearButton {\n  padding: 3px 6px;\n}\n\ntreeSelect {\n  min-width: 177px;\n}\n";
-var css = {};
-styleInject(css_248z);
+var css_248z$2 = ".styles_clearButton__wCJPn {\n  padding: 3px 6px;\n}\n\n.styles_treeSelect__eV4gN {\n  min-width: 177px;\n}\n";
+var css$2 = {"clearButton":"styles_clearButton__wCJPn","treeSelect":"styles_treeSelect__eV4gN"};
+styleInject(css_248z$2);
 
 var _this$4 = undefined,
     _jsxFileName$4 = "/home/djheroez/workspace/mui-tree-select/src/tree-select-input.jsx";
+var SelectSelect = styles.styled("div", {
+  name: "MuiSelect",
+  slot: "Select",
+  overridesResolver: function overridesResolver(props, styles) {
+    var ownerState = props.ownerState;
+    return [// Win specificity over the input base
+    _defineProperty({}, "&.".concat(selectClasses__default['default'].select), styles.select), _defineProperty({}, "&.".concat(selectClasses__default['default'].select), styles[ownerState.variant]), _defineProperty({}, "&.".concat(selectClasses__default['default'].multiple), styles.multiple)];
+  }
+})(NativeSelectInput.nativeSelectSelectStyles, _defineProperty({}, "&.".concat(selectClasses__default['default'].select), {
+  height: "auto",
+  // Resets for multiple select with chips
+  minHeight: "1.4375em",
+  // Required for select\text-field height consistency
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  overflow: "hidden"
+}));
+var SelectNativeInput = styles.styled("input", {
+  shouldForwardProp: function shouldForwardProp(prop) {
+    return styled.slotShouldForwardProp(prop) && prop !== "classes";
+  },
+  name: "MuiSelect",
+  slot: "NativeInput",
+  overridesResolver: function overridesResolver(props, styles) {
+    return styles.nativeInput;
+  }
+})({
+  bottom: 0,
+  left: 0,
+  position: "absolute",
+  opacity: 0,
+  pointerEvents: "none",
+  width: "100%",
+  boxSizing: "border-box"
+});
 var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
   var className = props.className,
       classes = props.classes,
       hierarchyField = props.hierarchyField,
+      variant = props.variant,
       disabled = props.disabled,
       id = props.id,
       name = props.name,
@@ -2637,6 +2650,7 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
       defaultValue = props.defaultValue,
       onChange = props.onChange;
   var inputRef = React.useRef(null);
+  var displayRef = React__default['default'].useRef(null);
 
   var _React$useState = React__default['default'].useState(null),
       _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -2720,6 +2734,19 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     triggerChange(event, "");
   };
 
+  var ownerState = _objectSpread2(_objectSpread2({}, props), {}, {
+    variant: variant,
+    value: value,
+    open: open
+  });
+
+  var handleDisplayRef = React.useCallback(function (node) {
+    displayRef.current = node;
+
+    if (node) {
+      setDisplayNode(node);
+    }
+  }, []);
   React.useImperativeHandle(handleRef, function () {
     return {
       focus: function focus() {
@@ -2729,62 +2756,58 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
       value: value
     };
   }, [value]);
-  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("div", {
-    id: id,
-    ref: setDisplayNode,
+  return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(SelectSelect, {
     role: "button",
-    "aria-expanded": open ? "true" : undefined,
-    tabIndex: 0,
+    ref: handleDisplayRef,
     onFocus: handlePopoverOpen,
     onMouseDown: handlePopoverOpen,
-    className: clsx(classes.root, classes.select, classes.selectMenu, _defineProperty({}, classes.disabled, disabled), className, css.treeSelect),
+    className: clsx(className, css$2.treeSelect),
+    ownerState: ownerState,
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 112,
+      lineNumber: 171,
       columnNumber: 7
     }
-  }, description ||
-  /*#__PURE__*/
-  // eslint-disable-next-line react/no-danger
-  React__default['default'].createElement("span", {
+  }, description || /*#__PURE__*/React__default['default'].createElement("span", {
+    className: "notranslate" // eslint-disable-next-line react/no-danger
+    ,
     dangerouslySetInnerHTML: {
       __html: "&#8203;"
     },
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 133,
+      lineNumber: 180,
       columnNumber: 11
     }
-  })), /*#__PURE__*/React__default['default'].createElement("input", {
+  })), /*#__PURE__*/React__default['default'].createElement(SelectNativeInput, {
     value: value,
     name: name,
     ref: inputRef,
     "aria-hidden": true,
     onChange: handleChange,
-    className: classes.nativeInput,
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 136,
+      lineNumber: 187,
       columnNumber: 7
     }
   }), /*#__PURE__*/React__default['default'].createElement(material.IconButton, {
     "aria-label": "clear",
-    className: css.clearButton,
+    className: css$2.clearButton,
     onClick: onClear,
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 144,
+      lineNumber: 194,
       columnNumber: 7
     }
   }, /*#__PURE__*/React__default['default'].createElement(CloseIcon__default['default'], {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 149,
+      lineNumber: 199,
       columnNumber: 9
     }
   })), /*#__PURE__*/React__default['default'].createElement(TreeDropdown, {
@@ -2801,7 +2824,7 @@ var TreeSelectInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$4,
     __source: {
       fileName: _jsxFileName$4,
-      lineNumber: 151,
+      lineNumber: 201,
       columnNumber: 7
     }
   }));
@@ -2832,17 +2855,22 @@ TreeSelectInput.propTypes = {
 
 var _this$5 = undefined,
     _jsxFileName$5 = "/home/djheroez/workspace/mui-tree-select/src/mui-tree-select.jsx";
-var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (props, ref) {
+var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (inProps, ref) {
+  var props = material.useThemeProps({
+    props: inProps,
+    name: "MuiTreeSelect"
+  });
   var inputProps = props.inputProps,
       inputLabelProps = props.inputLabelProps,
       label = props.label,
       id = props.id,
-      value = props.value;
+      value = props.value,
+      variant = props.variant;
   var treeSelect = /*#__PURE__*/React.cloneElement( /*#__PURE__*/React__default['default'].createElement(material.Input, {
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 11,
+      lineNumber: 12,
       columnNumber: 35
     }
   }), {
@@ -2853,10 +2881,11 @@ var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (props, ref) {
   });
   var shrink = (inputLabelProps === null || inputLabelProps === void 0 ? void 0 : inputLabelProps.shrink) !== undefined ? inputLabelProps.shrink : Boolean(value);
   return label ? /*#__PURE__*/React__default['default'].createElement(material.FormControl, {
+    variant: variant,
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 24,
+      lineNumber: 25,
       columnNumber: 5
     }
   }, /*#__PURE__*/React__default['default'].createElement(material.InputLabel, {
@@ -2865,7 +2894,7 @@ var MuiTreeSelect = /*#__PURE__*/React.forwardRef(function (props, ref) {
     __self: _this$5,
     __source: {
       fileName: _jsxFileName$5,
-      lineNumber: 25,
+      lineNumber: 26,
       columnNumber: 7
     }
   }, label), treeSelect) : treeSelect;
@@ -2876,7 +2905,8 @@ MuiTreeSelect.propTypes = {
   inputLabelProps: propTypes.object,
   inputProps: propTypes.object,
   label: propTypes.string,
-  value: propTypes.string
+  value: propTypes.string,
+  variant: propTypes.string
 };
 
 module.exports = MuiTreeSelect;

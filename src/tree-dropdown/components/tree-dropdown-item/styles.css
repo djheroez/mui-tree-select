@@ -1,0 +1,8 @@
+.treeButton {
+  text-transform: none;
+
+  &:hover {
+    text-decoration: underline;
+    background-color: transparent;
+  }
+}
